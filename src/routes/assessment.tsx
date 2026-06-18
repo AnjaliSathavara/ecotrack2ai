@@ -255,22 +255,89 @@ function SliderField({
   step: number;
   unit: string;
 }) {
+  const id = useId();
+  const valueId = `${id}-value`;
   return (
     <div>
       <div className="flex items-center justify-between">
-        <Label className="text-sm">{label}</Label>
-        <div className="text-sm font-medium tabular-nums">
+        <Label htmlFor={id} className="text-sm">{label}</Label>
+        <div id={valueId} className="text-sm font-medium tabular-nums" aria-live="polite">
           {value} <span className="text-muted-foreground">{unit}</span>
         </div>
       </div>
       <Slider
+        id={id}
         className="mt-3"
         value={[value]}
         min={min}
         max={max}
         step={step}
         onValueChange={([v]) => onChange(v)}
+        aria-label={`${label} (${unit})`}
+        aria-valuetext={`${value} ${unit}`}
       />
     </div>
   );
 }
+
+function SelectField<T extends string>({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: T;
+  onChange: (v: string) => void;
+  options: ReadonlyArray<readonly [T, string]>;
+}) {
+  const id = useId();
+  return (
+    <div className="space-y-2">
+      <Label htmlFor={id}>{label}</Label>
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger id={id} aria-label={label}>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map(([v, l]) => (
+            <SelectItem key={v} value={v}>
+              {l}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
+function SwitchField({
+  label,
+  desc,
+  checked,
+  onChange,
+}: {
+  label: string;
+  desc: string;
+  checked: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  const id = useId();
+  const descId = `${id}-desc`;
+  return (
+    <div className="flex items-center justify-between rounded-xl border border-border p-4">
+      <div>
+        <Label htmlFor={id} className="font-medium cursor-pointer">{label}</Label>
+        <div id={descId} className="text-sm text-muted-foreground">{desc}</div>
+      </div>
+      <Switch
+        id={id}
+        checked={checked}
+        onCheckedChange={onChange}
+        aria-describedby={descId}
+        aria-label={label}
+      />
+    </div>
+  );
+}
+
