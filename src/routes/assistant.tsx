@@ -136,7 +136,7 @@ function AssistantPage() {
                     {isUser ? (
                       <div className="whitespace-pre-wrap text-sm">{text}</div>
                     ) : (
-                      <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-2 prose-headings:mt-3 prose-headings:mb-1 prose-ul:my-2 prose-li:my-0.5">
+                      <div className="text-sm leading-relaxed [&>p]:my-2 [&>ul]:my-2 [&>ul]:list-disc [&>ul]:pl-5 [&>ol]:my-2 [&>ol]:list-decimal [&>ol]:pl-5 [&_li]:my-1 [&_strong]:font-semibold [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-xs [&>h1]:mt-3 [&>h1]:text-base [&>h1]:font-semibold [&>h2]:mt-3 [&>h2]:text-base [&>h2]:font-semibold [&>h3]:mt-3 [&>h3]:font-semibold">
                         <ReactMarkdown>{text}</ReactMarkdown>
                       </div>
                     )}
