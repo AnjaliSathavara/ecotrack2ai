@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { SiteFooter, SiteNav } from "@/components/site-nav";
-import { useState } from "react";
+import { useId, useState } from "react";
 import {
   DEFAULT_ASSESSMENT,
   loadAssessment,
@@ -109,18 +109,17 @@ function AssessmentPage() {
           </Section>
 
           <Section icon={UtensilsCrossed} title="Food Habits" desc="Diet & sourcing">
-            <div className="space-y-2">
-              <Label>Diet</Label>
-              <Select value={data.diet} onValueChange={(v) => update("diet", v as AssessmentData["diet"])}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="vegan">Vegan</SelectItem>
-                  <SelectItem value="vegetarian">Vegetarian</SelectItem>
-                  <SelectItem value="omnivore">Omnivore</SelectItem>
-                  <SelectItem value="heavy-meat">Heavy meat eater</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <SelectField
+              label="Diet"
+              value={data.diet}
+              onChange={(v) => update("diet", v as AssessmentData["diet"])}
+              options={[
+                ["vegan", "Vegan"],
+                ["vegetarian", "Vegetarian"],
+                ["omnivore", "Omnivore"],
+                ["heavy-meat", "Heavy meat eater"],
+              ]}
+            />
             <SliderField
               label="Local & seasonal food"
               value={data.localFood}
@@ -133,25 +132,23 @@ function AssessmentPage() {
           </Section>
 
           <Section icon={ShoppingBag} title="Shopping" desc="Goods & clothing frequency">
-            <div className="space-y-2">
-              <Label>Shopping frequency</Label>
-              <Select value={data.shoppingFrequency} onValueChange={(v) => update("shoppingFrequency", v as AssessmentData["shoppingFrequency"]) }>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="low">Low — only essentials</SelectItem>
-                  <SelectItem value="medium">Medium — occasional</SelectItem>
-                  <SelectItem value="high">High — monthly hauls</SelectItem>
-                  <SelectItem value="very-high">Very high — weekly</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-center justify-between rounded-xl border border-border p-4">
-              <div>
-                <div className="font-medium">Fast fashion</div>
-                <div className="text-sm text-muted-foreground">I buy from fast-fashion brands</div>
-              </div>
-              <Switch checked={data.fastFashion} onCheckedChange={(v) => update("fastFashion", v)} />
-            </div>
+            <SelectField
+              label="Shopping frequency"
+              value={data.shoppingFrequency}
+              onChange={(v) => update("shoppingFrequency", v as AssessmentData["shoppingFrequency"])}
+              options={[
+                ["low", "Low — only essentials"],
+                ["medium", "Medium — occasional"],
+                ["high", "High — monthly hauls"],
+                ["very-high", "Very high — weekly"],
+              ]}
+            />
+            <SwitchField
+              label="Fast fashion"
+              desc="I buy from fast-fashion brands"
+              checked={data.fastFashion}
+              onChange={(v) => update("fastFashion", v)}
+            />
           </Section>
 
           <Section icon={Recycle} title="Waste" desc="Recycling & composting">
@@ -164,13 +161,12 @@ function AssessmentPage() {
               step={5}
               unit="%"
             />
-            <div className="flex items-center justify-between rounded-xl border border-border p-4">
-              <div>
-                <div className="font-medium">Composting</div>
-                <div className="text-sm text-muted-foreground">I compost food scraps</div>
-              </div>
-              <Switch checked={data.compost} onCheckedChange={(v) => update("compost", v)} />
-            </div>
+            <SwitchField
+              label="Composting"
+              desc="I compost food scraps"
+              checked={data.compost}
+              onChange={(v) => update("compost", v)}
+            />
           </Section>
 
           <Section icon={Plane} title="Travel" desc="Flights & vacations">
@@ -183,19 +179,19 @@ function AssessmentPage() {
               step={1}
               unit="flights / yr"
             />
-            <div className="space-y-2">
-              <Label>Vacation travel</Label>
-              <Select value={data.travelHabits} onValueChange={(v) => update("travelHabits", v as AssessmentData["travelHabits"]) }>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="rare">Rarely travel</SelectItem>
-                  <SelectItem value="annual">Once a year</SelectItem>
-                  <SelectItem value="frequent">A few times a year</SelectItem>
-                  <SelectItem value="very-frequent">Monthly trips</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <SelectField
+              label="Vacation travel"
+              value={data.travelHabits}
+              onChange={(v) => update("travelHabits", v as AssessmentData["travelHabits"])}
+              options={[
+                ["rare", "Rarely travel"],
+                ["annual", "Once a year"],
+                ["frequent", "A few times a year"],
+                ["very-frequent", "Monthly trips"],
+              ]}
+            />
           </Section>
+
 
           <div className="lg:col-span-2 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-card p-6 shadow-soft">
             <div>
