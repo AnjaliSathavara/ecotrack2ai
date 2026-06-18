@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { SiteFooter, SiteNav } from "@/components/site-nav";
-import { useState } from "react";
+import { useId, useState } from "react";
 import {
   DEFAULT_ASSESSMENT,
   loadAssessment,
@@ -109,18 +109,17 @@ function AssessmentPage() {
           </Section>
 
           <Section icon={UtensilsCrossed} title="Food Habits" desc="Diet & sourcing">
-            <div className="space-y-2">
-              <Label>Diet</Label>
-              <Select value={data.diet} onValueChange={(v) => update("diet", v as AssessmentData["diet"])}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="vegan">Vegan</SelectItem>
-                  <SelectItem value="vegetarian">Vegetarian</SelectItem>
-                  <SelectItem value="omnivore">Omnivore</SelectItem>
-                  <SelectItem value="heavy-meat">Heavy meat eater</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <SelectField
+              label="Diet"
+              value={data.diet}
+              onChange={(v) => update("diet", v as AssessmentData["diet"])}
+              options={[
+                ["vegan", "Vegan"],
+                ["vegetarian", "Vegetarian"],
+                ["omnivore", "Omnivore"],
+                ["heavy-meat", "Heavy meat eater"],
+              ]}
+            />
             <SliderField
               label="Local & seasonal food"
               value={data.localFood}
@@ -133,25 +132,23 @@ function AssessmentPage() {
           </Section>
 
           <Section icon={ShoppingBag} title="Shopping" desc="Goods & clothing frequency">
-            <div className="space-y-2">
-              <Label>Shopping frequency</Label>
-              <Select value={data.shoppingFrequency} onValueChange={(v) => update("shoppingFrequency", v as AssessmentData["shoppingFrequency"]) }>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="low">Low — only essentials</SelectItem>
-                  <SelectItem value="medium">Medium — occasional</SelectItem>
-                  <SelectItem value="high">High — monthly hauls</SelectItem>
-                  <SelectItem value="very-high">Very high — weekly</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-center justify-between rounded-xl border border-border p-4">
-              <div>
-                <div className="font-medium">Fast fashion</div>
-                <div className="text-sm text-muted-foreground">I buy from fast-fashion brands</div>
-              </div>
-              <Switch checked={data.fastFashion} onCheckedChange={(v) => update("fastFashion", v)} />
-            </div>
+            <SelectField
+              label="Shopping frequency"
+              value={data.shoppingFrequency}
+              onChange={(v) => update("shoppingFrequency", v as AssessmentData["shoppingFrequency"])}
+              options={[
+                ["low", "Low — only essentials"],
+                ["medium", "Medium — occasional"],
+                ["high", "High — monthly hauls"],
+                ["very-high", "Very high — weekly"],
+              ]}
+            />
+            <SwitchField
+              label="Fast fashion"
+              desc="I buy from fast-fashion brands"
+              checked={data.fastFashion}
+              onChange={(v) => update("fastFashion", v)}
+            />
           </Section>
 
           <Section icon={Recycle} title="Waste" desc="Recycling & composting">
@@ -164,13 +161,12 @@ function AssessmentPage() {
               step={5}
               unit="%"
             />
-            <div className="flex items-center justify-between rounded-xl border border-border p-4">
-              <div>
-                <div className="font-medium">Composting</div>
-                <div className="text-sm text-muted-foreground">I compost food scraps</div>
-              </div>
-              <Switch checked={data.compost} onCheckedChange={(v) => update("compost", v)} />
-            </div>
+            <SwitchField
+              label="Composting"
+              desc="I compost food scraps"
+              checked={data.compost}
+              onChange={(v) => update("compost", v)}
+            />
           </Section>
 
           <Section icon={Plane} title="Travel" desc="Flights & vacations">
@@ -183,19 +179,19 @@ function AssessmentPage() {
               step={1}
               unit="flights / yr"
             />
-            <div className="space-y-2">
-              <Label>Vacation travel</Label>
-              <Select value={data.travelHabits} onValueChange={(v) => update("travelHabits", v as AssessmentData["travelHabits"]) }>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="rare">Rarely travel</SelectItem>
-                  <SelectItem value="annual">Once a year</SelectItem>
-                  <SelectItem value="frequent">A few times a year</SelectItem>
-                  <SelectItem value="very-frequent">Monthly trips</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <SelectField
+              label="Vacation travel"
+              value={data.travelHabits}
+              onChange={(v) => update("travelHabits", v as AssessmentData["travelHabits"])}
+              options={[
+                ["rare", "Rarely travel"],
+                ["annual", "Once a year"],
+                ["frequent", "A few times a year"],
+                ["very-frequent", "Monthly trips"],
+              ]}
+            />
           </Section>
+
 
           <div className="lg:col-span-2 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-card p-6 shadow-soft">
             <div>
@@ -259,22 +255,89 @@ function SliderField({
   step: number;
   unit: string;
 }) {
+  const id = useId();
+  const valueId = `${id}-value`;
   return (
     <div>
       <div className="flex items-center justify-between">
-        <Label className="text-sm">{label}</Label>
-        <div className="text-sm font-medium tabular-nums">
+        <Label htmlFor={id} className="text-sm">{label}</Label>
+        <div id={valueId} className="text-sm font-medium tabular-nums" aria-live="polite">
           {value} <span className="text-muted-foreground">{unit}</span>
         </div>
       </div>
       <Slider
+        id={id}
         className="mt-3"
         value={[value]}
         min={min}
         max={max}
         step={step}
         onValueChange={([v]) => onChange(v)}
+        aria-label={`${label} (${unit})`}
+        aria-valuetext={`${value} ${unit}`}
       />
     </div>
   );
 }
+
+function SelectField<T extends string>({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: T;
+  onChange: (v: string) => void;
+  options: ReadonlyArray<readonly [T, string]>;
+}) {
+  const id = useId();
+  return (
+    <div className="space-y-2">
+      <Label htmlFor={id}>{label}</Label>
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger id={id} aria-label={label}>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map(([v, l]) => (
+            <SelectItem key={v} value={v}>
+              {l}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
+function SwitchField({
+  label,
+  desc,
+  checked,
+  onChange,
+}: {
+  label: string;
+  desc: string;
+  checked: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  const id = useId();
+  const descId = `${id}-desc`;
+  return (
+    <div className="flex items-center justify-between rounded-xl border border-border p-4">
+      <div>
+        <Label htmlFor={id} className="font-medium cursor-pointer">{label}</Label>
+        <div id={descId} className="text-sm text-muted-foreground">{desc}</div>
+      </div>
+      <Switch
+        id={id}
+        checked={checked}
+        onCheckedChange={onChange}
+        aria-describedby={descId}
+        aria-label={label}
+      />
+    </div>
+  );
+}
+
