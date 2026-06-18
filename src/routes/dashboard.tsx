@@ -108,7 +108,11 @@ function DashboardPage() {
               <CardDescription>Annual kg CO₂e by category</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-72">
+              <div
+                className="h-72"
+                role="img"
+                aria-label={`Bar chart of annual emissions by category: ${breakdownData.map((d) => `${d.name} ${d.value} kilograms`).join(", ")}.`}
+              >
                 <ResponsiveContainer>
                   <BarChart data={breakdownData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                     <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
@@ -140,7 +144,11 @@ function DashboardPage() {
               <CardDescription>Where your impact comes from</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-72">
+              <div
+                className="h-72"
+                role="img"
+                aria-label={`Pie chart of emission share. Total ${fp.totalKg} kilograms across ${breakdownData.length} categories.`}
+              >
                 <ResponsiveContainer>
                   <PieChart>
                     <Pie
@@ -179,24 +187,34 @@ function DashboardPage() {
               <CardDescription>Distance to a sustainable 2 t CO₂e target</CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
-              {breakdownData.map((row, i) => {
-                const max = Math.max(...breakdownData.map((b) => b.value));
-                const pct = Math.round((row.value / max) * 100);
-                return (
-                  <div key={row.name}>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="font-medium">{row.name}</span>
-                      <span className="text-muted-foreground tabular-nums">{row.value} kg</span>
-                    </div>
-                    <div className="mt-2 h-2 overflow-hidden rounded-full bg-muted">
+              <ul className="space-y-5" aria-label="Emissions by category">
+                {breakdownData.map((row, i) => {
+                  const max = Math.max(...breakdownData.map((b) => b.value));
+                  const pct = Math.round((row.value / max) * 100);
+                  return (
+                    <li key={row.name}>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="font-medium">{row.name}</span>
+                        <span className="text-muted-foreground tabular-nums">{row.value} kg</span>
+                      </div>
                       <div
-                        className="h-full rounded-full"
-                        style={{ width: `${pct}%`, background: CHART_COLORS[i % CHART_COLORS.length] }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
+                        className="mt-2 h-2 overflow-hidden rounded-full bg-muted"
+                        role="progressbar"
+                        aria-label={`${row.name} share of largest category`}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-valuenow={pct}
+                        aria-valuetext={`${row.value} kilograms, ${pct} percent of largest category`}
+                      >
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: `${pct}%`, background: CHART_COLORS[i % CHART_COLORS.length] }}
+                        />
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
             </CardContent>
           </Card>
 
@@ -206,7 +224,11 @@ function DashboardPage() {
               <CardDescription>Relative footprint per area</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-72">
+              <div
+                className="h-72"
+                role="img"
+                aria-label="Radar chart showing your relative footprint across categories compared to your own totals."
+              >
                 <ResponsiveContainer>
                   <RadarChart data={radarData}>
                     <PolarGrid stroke="var(--border)" />
