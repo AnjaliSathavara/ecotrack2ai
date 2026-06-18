@@ -87,24 +87,40 @@ function AssistantPage() {
         </div>
 
         <Card className="grid grid-rows-[1fr_auto] h-[68vh] overflow-hidden shadow-soft">
-          <div ref={scrollRef} className="overflow-y-auto p-4 sm:p-6 space-y-5">
+          <div
+            ref={scrollRef}
+            className="overflow-y-auto p-4 sm:p-6 space-y-5"
+            role="log"
+            aria-label="Conversation with AI sustainability assistant"
+            aria-live="polite"
+            aria-relevant="additions text"
+            aria-atomic="false"
+            tabIndex={0}
+          >
             {messages.length === 0 && (
               <div className="grid place-items-center h-full text-center">
                 <div className="max-w-md">
-                  <div className="mx-auto grid size-14 place-items-center rounded-2xl bg-gradient-primary text-primary-foreground shadow-elegant">
+                  <div
+                    className="mx-auto grid size-14 place-items-center rounded-2xl bg-gradient-primary text-primary-foreground shadow-elegant"
+                    aria-hidden="true"
+                  >
                     <Sparkles className="size-7" />
                   </div>
                   <h2 className="mt-4 text-xl font-semibold">Ask me anything about sustainability</h2>
                   <p className="mt-2 text-sm text-muted-foreground">
                     From carbon footprints to climate-friendly recipes, I'm here to help.
                   </p>
-                  <div className="mt-6 grid gap-2 sm:grid-cols-2">
+                  <div
+                    className="mt-6 grid gap-2 sm:grid-cols-2"
+                    role="group"
+                    aria-label="Suggested prompts"
+                  >
                     {SUGGESTIONS.map((s) => (
                       <button
                         key={s}
                         type="button"
                         onClick={() => submit(s)}
-                        className="rounded-xl border border-border bg-card px-3 py-2 text-left text-sm transition-colors hover:bg-accent"
+                        className="rounded-xl border border-border bg-card px-3 py-2 text-left text-sm transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                       >
                         {s}
                       </button>
@@ -120,9 +136,16 @@ function AssistantPage() {
                 .join("");
               const isUser = m.role === "user";
               return (
-                <div key={m.id} className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"}`}>
+                <article
+                  key={m.id}
+                  className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"}`}
+                  aria-label={isUser ? "You said" : "Assistant said"}
+                >
                   {!isUser && (
-                    <div className="mt-1 grid size-8 shrink-0 place-items-center rounded-full bg-gradient-primary text-primary-foreground">
+                    <div
+                      className="mt-1 grid size-8 shrink-0 place-items-center rounded-full bg-gradient-primary text-primary-foreground"
+                      aria-hidden="true"
+                    >
                       <Bot className="size-4" />
                     </div>
                   )}
@@ -142,21 +165,34 @@ function AssistantPage() {
                     )}
                   </div>
                   {isUser && (
-                    <div className="mt-1 grid size-8 shrink-0 place-items-center rounded-full bg-muted">
+                    <div
+                      className="mt-1 grid size-8 shrink-0 place-items-center rounded-full bg-muted"
+                      aria-hidden="true"
+                    >
                       <User className="size-4" />
                     </div>
                   )}
-                </div>
+                </article>
               );
             })}
 
+            <div role="status" aria-live="polite" className="sr-only">
+              {status === "submitted"
+                ? "Assistant is thinking"
+                : status === "streaming"
+                  ? "Assistant is replying"
+                  : ""}
+            </div>
             {status === "submitted" && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground" aria-hidden="true">
                 <Loader2 className="size-4 animate-spin" /> Thinking…
               </div>
             )}
             {error && (
-              <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
+              <div
+                role="alert"
+                className="rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
+              >
                 {error.message}
               </div>
             )}
@@ -168,8 +204,13 @@ function AssistantPage() {
               submit(input);
             }}
             className="border-t border-border p-3 sm:p-4 flex items-end gap-2 bg-card"
+            aria-label="Send a message to the assistant"
           >
+            <label htmlFor="assistant-input" className="sr-only">
+              Message the AI sustainability assistant
+            </label>
             <Textarea
+              id="assistant-input"
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -181,17 +222,25 @@ function AssistantPage() {
               }}
               placeholder="Ask about your footprint, sustainable swaps, climate science…"
               rows={1}
-              className="min-h-[44px] max-h-32 resize-none"
+              className="min-h-[44px] max-h-32 resize-none focus-visible:ring-2 focus-visible:ring-ring"
               disabled={isBusy}
+              aria-describedby="assistant-input-help"
             />
+            <span id="assistant-input-help" className="sr-only">
+              Press Enter to send, Shift plus Enter for a new line.
+            </span>
             <Button
               type="submit"
               size="icon"
               disabled={isBusy || !input.trim()}
-              className="bg-gradient-primary text-primary-foreground shadow-elegant hover:opacity-90 shrink-0"
-              aria-label="Send"
+              className="bg-gradient-primary text-primary-foreground shadow-elegant hover:opacity-90 shrink-0 min-h-11 min-w-11 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              aria-label={isBusy ? "Sending message" : "Send message"}
             >
-              {isBusy ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
+              {isBusy ? (
+                <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+              ) : (
+                <Send className="size-4" aria-hidden="true" />
+              )}
             </Button>
           </form>
         </Card>
