@@ -1,15 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteFooter, SiteNav } from "@/components/site-nav";
 import { useEffect, useMemo, useState } from "react";
-import { computeFootprint, loadAssessment, DEFAULT_ASSESSMENT } from "@/lib/assessment";
+import { computeFootprint, loadAssessment, DEFAULT_ASSESSMENT, type AssessmentData } from "@/lib/assessment";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 import {
   Bar,
   BarChart,
   CartesianGrid,
   Cell,
+  Line,
+  LineChart,
   Pie,
   PieChart,
   PolarAngleAxis,
@@ -21,7 +24,10 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { ArrowRight, Leaf, Sparkles, TrendingDown, Trophy } from "lucide-react";
+import { ArrowRight, History, Leaf, Sparkles, TrendingDown, Trophy } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
+import { supabase } from "@/integrations/supabase/client";
+import { badgeForScore } from "@/lib/badge";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -35,19 +41,48 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 
 const CHART_COLORS = ["var(--leaf)", "var(--ocean)", "var(--sun)", "var(--earth)", "#7dd3fc", "#a78bfa", "#f472b6"];
 
+type HistoryRow = {
+  id: string;
+  data: AssessmentData;
+  total_tonnes: number;
+  score: number;
+  rating: string;
+  created_at: string;
+};
+
 function DashboardPage() {
+  const { user, profile } = useAuth();
   const [data, setData] = useState(() => loadAssessment() ?? DEFAULT_ASSESSMENT);
   const [hasAssessment, setHasAssessment] = useState(false);
+  const [history, setHistory] = useState<HistoryRow[]>([]);
 
   useEffect(() => {
-    const a = loadAssessment();
-    if (a) {
-      setData(a);
-      setHasAssessment(true);
-    }
-  }, []);
+    if (!user) return;
+    supabase
+      .from("assessments")
+      .select("id, data, total_tonnes, score, rating, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(12)
+      .then(({ data: rows }) => {
+        if (rows && rows.length) {
+          const items = rows as unknown as HistoryRow[];
+          setHistory(items);
+          setData(items[0].data);
+          setHasAssessment(true);
+        } else {
+          const local = loadAssessment();
+          if (local) {
+            setData(local);
+            setHasAssessment(true);
+          }
+        }
+      });
+  }, [user]);
 
   const fp = useMemo(() => computeFootprint(data), [data]);
+  const badge = badgeForScore(fp.score);
+  const greeting = profile?.display_name?.split(" ")[0] || user?.email?.split("@")[0] || "EcoTracker";
 
   const breakdownData = Object.entries(fp.breakdown).map(([name, value]) => ({ name, value }));
   const radarData = breakdownData.map((d) => ({
@@ -55,18 +90,28 @@ function DashboardPage() {
     you: Math.min(100, Math.round((d.value / fp.totalKg) * 100 * 3)),
   }));
 
+  const trendData = [...history]
+    .reverse()
+    .map((h) => ({
+      date: new Date(h.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+      score: h.score,
+      tonnes: Number(h.total_tonnes),
+    }));
+
   return (
     <div className="min-h-screen flex flex-col">
       <SiteNav />
       <main className="mx-auto w-full max-w-7xl px-4 sm:px-6 py-10 flex-1">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <div className="text-sm font-medium text-leaf">Overview</div>
-            <h1 className="mt-1 text-3xl font-bold sm:text-4xl">Your sustainability dashboard</h1>
-            <p className="mt-2 text-muted-foreground">
+            <div className="text-sm font-medium text-leaf">Welcome back</div>
+            <h1 className="mt-1 text-3xl font-bold sm:text-4xl">
+              Hi {greeting} 👋
+            </h1>
+            <p className="mt-2 text-muted-foreground flex flex-wrap items-center gap-2">
               {hasAssessment
-                ? "Updated from your latest assessment."
-                : "Showing example data — complete the assessment for personalized results."}
+                ? <>Your latest sustainability snapshot. <Badge variant="secondary" className={badge.color}>{badge.name}</Badge></>
+                : <>Showing example data — complete the assessment for personalized results.</>}
             </p>
           </div>
           <Button asChild variant="outline">
