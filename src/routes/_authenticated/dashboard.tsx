@@ -291,6 +291,53 @@ function DashboardPage() {
           </Card>
         </div>
 
+        {/* History */}
+        {history.length > 0 && (
+          <div className="mt-6 grid gap-5 lg:grid-cols-3">
+            <Card className="lg:col-span-2 shadow-soft">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2"><History className="size-5 text-leaf" /> Progress over time</CardTitle>
+                <CardDescription>Your carbon score across your last {history.length} assessments</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-64" role="img" aria-label={`Line chart of carbon score across ${trendData.length} assessments`}>
+                  <ResponsiveContainer>
+                    <LineChart data={trendData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                      <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="date" tickLine={false} axisLine={false} style={{ fontSize: 12, fill: "var(--muted-foreground)" }} />
+                      <YAxis domain={[0, 100]} tickLine={false} axisLine={false} style={{ fontSize: 12, fill: "var(--muted-foreground)" }} />
+                      <Tooltip
+                        contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12, color: "var(--popover-foreground)" }}
+                      />
+                      <Line type="monotone" dataKey="score" stroke="var(--leaf)" strokeWidth={3} dot={{ r: 4, fill: "var(--leaf)" }} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="shadow-soft">
+              <CardHeader>
+                <CardTitle>Assessment history</CardTitle>
+                <CardDescription>Most recent first</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ol className="space-y-3">
+                  {history.slice(0, 6).map((h) => (
+                    <li key={h.id} className="flex items-center justify-between gap-3 rounded-xl border border-border bg-muted/20 p-3">
+                      <div>
+                        <div className="text-sm font-medium">{new Date(h.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</div>
+                        <div className="text-xs text-muted-foreground">{Number(h.total_tonnes).toFixed(2)} t CO₂e · {h.rating}</div>
+                      </div>
+                      <div className="font-display text-xl font-bold tabular-nums">{h.score}</div>
+                    </li>
+                  ))}
+                </ol>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+
         {/* CTA */}
         <div className="mt-8 grid gap-4 sm:grid-cols-2">
           <CTA
