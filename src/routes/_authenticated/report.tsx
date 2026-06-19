@@ -6,8 +6,10 @@ import { computeFootprint, loadAssessment, DEFAULT_ASSESSMENT } from "@/lib/asse
 import { useMemo } from "react";
 import { Download, FileText, Leaf, Sparkles, TrendingDown, Trophy } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/use-auth";
+import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/report")({
+export const Route = createFileRoute("/_authenticated/report")({
   head: () => ({
     meta: [
       { title: "Sustainability Report — EcoTrack AI" },
@@ -18,13 +20,14 @@ export const Route = createFileRoute("/report")({
 });
 
 function ReportPage() {
+  const { user } = useAuth();
   const assessment = useMemo(() => loadAssessment() ?? DEFAULT_ASSESSMENT, []);
   const fp = useMemo(() => computeFootprint(assessment), [assessment]);
   const month = new Date().toLocaleString("en-US", { month: "long", year: "numeric" });
 
   const topCategory = Object.entries(fp.breakdown).sort((a, b) => b[1] - a[1])[0];
 
-  const downloadReport = () => {
+  const downloadReport = async () => {
     const lines = [
       "EcoTrack AI — Sustainability Report",
       `Period: ${month}`,
@@ -54,7 +57,14 @@ function ReportPage() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    toast.success("Report downloaded");
+    if (user) {
+      await supabase.from("reports").insert({
+        user_id: user.id,
+        month,
+        payload: { score: fp.score, rating: fp.rating, totalTonnes: fp.totalTonnes, breakdown: fp.breakdown } as never,
+      });
+    }
+    toast.success("Report saved & downloaded");
   };
 
   return (

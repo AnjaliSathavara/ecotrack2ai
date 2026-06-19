@@ -1,9 +1,22 @@
-import { Link } from "@tanstack/react-router";
-import { Leaf, Menu } from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { Leaf, LogOut, Menu, User as UserIcon } from "lucide-react";
 import { useState } from "react";
 import { ThemeToggle } from "./theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from "@/hooks/use-auth";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const links = [
   { to: "/assessment", label: "Assessment" },
@@ -15,6 +28,20 @@ const links = [
 
 export function SiteNav() {
   const [open, setOpen] = useState(false);
+  const { user, profile } = useAuth();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const handleSignOut = async () => {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    toast.success("Signed out");
+    navigate({ to: "/auth", replace: true });
+  };
+
+  const initials = (profile?.display_name || user?.email || "?").slice(0, 2).toUpperCase();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/60 glass">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
@@ -42,9 +69,46 @@ export function SiteNav() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Button asChild size="sm" className="hidden sm:inline-flex bg-gradient-primary text-primary-foreground shadow-elegant hover:opacity-90">
-            <Link to="/assessment">Get Started</Link>
-          </Button>
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="rounded-full" aria-label="Account menu">
+                  <Avatar className="size-9">
+                    <AvatarImage src={profile?.avatar_url ?? undefined} alt={profile?.display_name ?? user.email ?? ""} />
+                    <AvatarFallback className="bg-gradient-primary text-primary-foreground text-sm font-semibold">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel className="flex flex-col gap-0.5">
+                  <span className="text-sm">{profile?.display_name || "EcoTracker"}</span>
+                  <span className="text-xs font-normal text-muted-foreground truncate">{user.email}</span>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/profile"><UserIcon className="mr-2 size-4" /> Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/dashboard">Dashboard</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive">
+                  <LogOut className="mr-2 size-4" /> Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <>
+              <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+                <Link to="/auth">Sign in</Link>
+              </Button>
+              <Button asChild size="sm" className="hidden sm:inline-flex bg-gradient-primary text-primary-foreground shadow-elegant hover:opacity-90">
+                <Link to="/auth" search={{ tab: "signup", redirect: "/dashboard" }}>Get Started</Link>
+              </Button>
+            </>
+          )}
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open menu">
@@ -63,9 +127,11 @@ export function SiteNav() {
                     {l.label}
                   </Link>
                 ))}
-                <Button asChild className="mt-4 bg-gradient-primary text-primary-foreground">
-                  <Link to="/assessment" onClick={() => setOpen(false)}>Get Started</Link>
-                </Button>
+                {!user && (
+                  <Button asChild className="mt-4 bg-gradient-primary text-primary-foreground">
+                    <Link to="/auth" onClick={() => setOpen(false)}>Sign in</Link>
+                  </Button>
+                )}
               </div>
             </SheetContent>
           </Sheet>

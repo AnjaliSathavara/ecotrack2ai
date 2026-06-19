@@ -1,15 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteFooter, SiteNav } from "@/components/site-nav";
 import { useEffect, useMemo, useState } from "react";
-import { computeFootprint, loadAssessment, DEFAULT_ASSESSMENT } from "@/lib/assessment";
+import { computeFootprint, loadAssessment, DEFAULT_ASSESSMENT, type AssessmentData } from "@/lib/assessment";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 import {
   Bar,
   BarChart,
   CartesianGrid,
   Cell,
+  Line,
+  LineChart,
   Pie,
   PieChart,
   PolarAngleAxis,
@@ -21,9 +24,12 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { ArrowRight, Leaf, Sparkles, TrendingDown, Trophy } from "lucide-react";
+import { ArrowRight, History, Leaf, Sparkles, TrendingDown, Trophy } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
+import { supabase } from "@/integrations/supabase/client";
+import { badgeForScore } from "@/lib/badge";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
       { title: "Sustainability Dashboard — EcoTrack AI" },
@@ -35,19 +41,48 @@ export const Route = createFileRoute("/dashboard")({
 
 const CHART_COLORS = ["var(--leaf)", "var(--ocean)", "var(--sun)", "var(--earth)", "#7dd3fc", "#a78bfa", "#f472b6"];
 
+type HistoryRow = {
+  id: string;
+  data: AssessmentData;
+  total_tonnes: number;
+  score: number;
+  rating: string;
+  created_at: string;
+};
+
 function DashboardPage() {
+  const { user, profile } = useAuth();
   const [data, setData] = useState(() => loadAssessment() ?? DEFAULT_ASSESSMENT);
   const [hasAssessment, setHasAssessment] = useState(false);
+  const [history, setHistory] = useState<HistoryRow[]>([]);
 
   useEffect(() => {
-    const a = loadAssessment();
-    if (a) {
-      setData(a);
-      setHasAssessment(true);
-    }
-  }, []);
+    if (!user) return;
+    supabase
+      .from("assessments")
+      .select("id, data, total_tonnes, score, rating, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(12)
+      .then(({ data: rows }) => {
+        if (rows && rows.length) {
+          const items = rows as unknown as HistoryRow[];
+          setHistory(items);
+          setData(items[0].data);
+          setHasAssessment(true);
+        } else {
+          const local = loadAssessment();
+          if (local) {
+            setData(local);
+            setHasAssessment(true);
+          }
+        }
+      });
+  }, [user]);
 
   const fp = useMemo(() => computeFootprint(data), [data]);
+  const badge = badgeForScore(fp.score);
+  const greeting = profile?.display_name?.split(" ")[0] || user?.email?.split("@")[0] || "EcoTracker";
 
   const breakdownData = Object.entries(fp.breakdown).map(([name, value]) => ({ name, value }));
   const radarData = breakdownData.map((d) => ({
@@ -55,18 +90,28 @@ function DashboardPage() {
     you: Math.min(100, Math.round((d.value / fp.totalKg) * 100 * 3)),
   }));
 
+  const trendData = [...history]
+    .reverse()
+    .map((h) => ({
+      date: new Date(h.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+      score: h.score,
+      tonnes: Number(h.total_tonnes),
+    }));
+
   return (
     <div className="min-h-screen flex flex-col">
       <SiteNav />
       <main className="mx-auto w-full max-w-7xl px-4 sm:px-6 py-10 flex-1">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <div className="text-sm font-medium text-leaf">Overview</div>
-            <h1 className="mt-1 text-3xl font-bold sm:text-4xl">Your sustainability dashboard</h1>
-            <p className="mt-2 text-muted-foreground">
+            <div className="text-sm font-medium text-leaf">Welcome back</div>
+            <h1 className="mt-1 text-3xl font-bold sm:text-4xl">
+              Hi {greeting} 👋
+            </h1>
+            <p className="mt-2 text-muted-foreground flex flex-wrap items-center gap-2">
               {hasAssessment
-                ? "Updated from your latest assessment."
-                : "Showing example data — complete the assessment for personalized results."}
+                ? <>Your latest sustainability snapshot. <Badge variant="secondary" className={badge.color}>{badge.name}</Badge></>
+                : <>Showing example data — complete the assessment for personalized results.</>}
             </p>
           </div>
           <Button asChild variant="outline">
@@ -245,6 +290,53 @@ function DashboardPage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* History */}
+        {history.length > 0 && (
+          <div className="mt-6 grid gap-5 lg:grid-cols-3">
+            <Card className="lg:col-span-2 shadow-soft">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2"><History className="size-5 text-leaf" /> Progress over time</CardTitle>
+                <CardDescription>Your carbon score across your last {history.length} assessments</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-64" role="img" aria-label={`Line chart of carbon score across ${trendData.length} assessments`}>
+                  <ResponsiveContainer>
+                    <LineChart data={trendData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                      <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="date" tickLine={false} axisLine={false} style={{ fontSize: 12, fill: "var(--muted-foreground)" }} />
+                      <YAxis domain={[0, 100]} tickLine={false} axisLine={false} style={{ fontSize: 12, fill: "var(--muted-foreground)" }} />
+                      <Tooltip
+                        contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12, color: "var(--popover-foreground)" }}
+                      />
+                      <Line type="monotone" dataKey="score" stroke="var(--leaf)" strokeWidth={3} dot={{ r: 4, fill: "var(--leaf)" }} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="shadow-soft">
+              <CardHeader>
+                <CardTitle>Assessment history</CardTitle>
+                <CardDescription>Most recent first</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ol className="space-y-3">
+                  {history.slice(0, 6).map((h) => (
+                    <li key={h.id} className="flex items-center justify-between gap-3 rounded-xl border border-border bg-muted/20 p-3">
+                      <div>
+                        <div className="text-sm font-medium">{new Date(h.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</div>
+                        <div className="text-xs text-muted-foreground">{Number(h.total_tonnes).toFixed(2)} t CO₂e · {h.rating}</div>
+                      </div>
+                      <div className="font-display text-xl font-bold tabular-nums">{h.score}</div>
+                    </li>
+                  ))}
+                </ol>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
 
         {/* CTA */}
         <div className="mt-8 grid gap-4 sm:grid-cols-2">
