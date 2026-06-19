@@ -10,6 +10,8 @@ import { Bot, Loader2, Send, Sparkles, User } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { computeFootprint, loadAssessment } from "@/lib/assessment";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/use-auth";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/assistant")({
   head: () => ({
@@ -29,6 +31,7 @@ const SUGGESTIONS = [
 ];
 
 function AssistantPage() {
+  const { user } = useAuth();
   const assessment = useMemo(() => loadAssessment(), []);
   const footprint = useMemo(() => (assessment ? computeFootprint(assessment) : null), [assessment]);
 
@@ -49,6 +52,8 @@ function AssistantPage() {
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const conversationIdRef = useRef<string | null>(null);
+  const savedIdsRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -57,6 +62,38 @@ function AssistantPage() {
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
+
+  // Persist completed messages
+  useEffect(() => {
+    if (!user || status !== "ready" || messages.length === 0) return;
+    const toSave = messages.filter((m) => !savedIdsRef.current.has(m.id));
+    if (toSave.length === 0) return;
+
+    const persist = async () => {
+      if (!conversationIdRef.current) {
+        const firstUser = messages.find((m) => m.role === "user");
+        const text = firstUser
+          ? firstUser.parts.map((p) => (p.type === "text" ? p.text : "")).join("").slice(0, 80)
+          : "New conversation";
+        const { data: conv, error: cErr } = await supabase
+          .from("conversations")
+          .insert({ user_id: user.id, title: text || "New conversation" })
+          .select("id")
+          .single();
+        if (cErr || !conv) return;
+        conversationIdRef.current = conv.id;
+      }
+      const rows = toSave.map((m) => ({
+        conversation_id: conversationIdRef.current!,
+        user_id: user.id,
+        role: m.role === "assistant" ? "assistant" : m.role === "user" ? "user" : "system",
+        content: m.parts.map((p) => (p.type === "text" ? p.text : "")).join(""),
+      }));
+      const { error: mErr } = await supabase.from("chat_messages").insert(rows);
+      if (!mErr) toSave.forEach((m) => savedIdsRef.current.add(m.id));
+    };
+    persist();
+  }, [messages, status, user]);
 
   const isBusy = status === "submitted" || status === "streaming";
 
