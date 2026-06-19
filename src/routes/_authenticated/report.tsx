@@ -57,7 +57,14 @@ function ReportPage() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    toast.success("Report downloaded");
+    if (user) {
+      await supabase.from("reports").insert({
+        user_id: user.id,
+        month,
+        payload: { score: fp.score, rating: fp.rating, totalTonnes: fp.totalTonnes, breakdown: fp.breakdown } as never,
+      });
+    }
+    toast.success("Report saved & downloaded");
   };
 
   return (
