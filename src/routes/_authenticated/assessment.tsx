@@ -2,11 +2,14 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { SiteFooter, SiteNav } from "@/components/site-nav";
 import { useId, useState } from "react";
 import {
+  computeFootprint,
   DEFAULT_ASSESSMENT,
   loadAssessment,
   saveAssessment,
   type AssessmentData,
 } from "@/lib/assessment";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -27,6 +30,7 @@ import {
   Recycle,
   Plane,
   ArrowRight,
+  Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -42,13 +46,32 @@ export const Route = createFileRoute("/_authenticated/assessment")({
 
 function AssessmentPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [data, setData] = useState<AssessmentData>(() => loadAssessment() ?? DEFAULT_ASSESSMENT);
+  const [busy, setBusy] = useState(false);
   const update = <K extends keyof AssessmentData>(k: K, v: AssessmentData[K]) =>
     setData((d) => ({ ...d, [k]: v }));
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setBusy(true);
     saveAssessment(data);
+    const fp = computeFootprint(data);
+    if (user) {
+      const { error } = await supabase.from("assessments").insert({
+        user_id: user.id,
+        data: data as unknown as Record<string, unknown>,
+        total_kg: fp.totalKg,
+        total_tonnes: fp.totalTonnes,
+        score: fp.score,
+        rating: fp.rating,
+      });
+      if (error) {
+        setBusy(false);
+        toast.error("Could not save assessment", { description: error.message });
+        return;
+      }
+    }
     toast.success("Assessment saved", { description: "Calculating your footprint…" });
     navigate({ to: "/dashboard" });
   };
@@ -198,7 +221,8 @@ function AssessmentPage() {
               <div className="font-semibold">Ready to see your impact?</div>
               <div className="text-sm text-muted-foreground">We'll compute your footprint and unlock your personalized dashboard.</div>
             </div>
-            <Button type="submit" size="lg" className="bg-gradient-primary text-primary-foreground shadow-elegant hover:opacity-90">
+            <Button type="submit" size="lg" disabled={busy} className="bg-gradient-primary text-primary-foreground shadow-elegant hover:opacity-90">
+              {busy ? <Loader2 className="mr-2 size-4 animate-spin" /> : null}
               Calculate footprint <ArrowRight className="ml-2 size-4" />
             </Button>
           </div>
