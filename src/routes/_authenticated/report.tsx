@@ -20,13 +20,14 @@ export const Route = createFileRoute("/_authenticated/report")({
 });
 
 function ReportPage() {
+  const { user } = useAuth();
   const assessment = useMemo(() => loadAssessment() ?? DEFAULT_ASSESSMENT, []);
   const fp = useMemo(() => computeFootprint(assessment), [assessment]);
   const month = new Date().toLocaleString("en-US", { month: "long", year: "numeric" });
 
   const topCategory = Object.entries(fp.breakdown).sort((a, b) => b[1] - a[1])[0];
 
-  const downloadReport = () => {
+  const downloadReport = async () => {
     const lines = [
       "EcoTrack AI — Sustainability Report",
       `Period: ${month}`,
