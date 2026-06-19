@@ -6,6 +6,8 @@ import { computeFootprint, loadAssessment, DEFAULT_ASSESSMENT } from "@/lib/asse
 import { useMemo } from "react";
 import { Download, FileText, Leaf, Sparkles, TrendingDown, Trophy } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/use-auth";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/report")({
   head: () => ({
