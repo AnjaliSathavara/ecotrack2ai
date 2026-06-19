@@ -11,7 +11,7 @@ import ReactMarkdown from "react-markdown";
 import { computeFootprint, loadAssessment } from "@/lib/assessment";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/assistant")({
+export const Route = createFileRoute("/_authenticated/assistant")({
   head: () => ({
     meta: [
       { title: "AI Sustainability Assistant — EcoTrack AI" },

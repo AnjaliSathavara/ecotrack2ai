@@ -23,7 +23,7 @@ import {
 } from "recharts";
 import { ArrowRight, Leaf, Sparkles, TrendingDown, Trophy } from "lucide-react";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
       { title: "Sustainability Dashboard — EcoTrack AI" },

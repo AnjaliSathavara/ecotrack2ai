@@ -19,7 +19,7 @@ import {
   Zap,
 } from "lucide-react";
 
-export const Route = createFileRoute("/guide")({
+export const Route = createFileRoute("/_authenticated/guide")({
   head: () => ({
     meta: [
       { title: "Pollution Reduction Guide — EcoTrack AI" },

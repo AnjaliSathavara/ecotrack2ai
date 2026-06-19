@@ -7,7 +7,7 @@ import { useMemo } from "react";
 import { Download, FileText, Leaf, Sparkles, TrendingDown, Trophy } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/report")({
+export const Route = createFileRoute("/_authenticated/report")({
   head: () => ({
     meta: [
       { title: "Sustainability Report — EcoTrack AI" },

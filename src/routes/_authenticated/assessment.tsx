@@ -30,7 +30,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/assessment")({
+export const Route = createFileRoute("/_authenticated/assessment")({
   head: () => ({
     meta: [
       { title: "Carbon Footprint Assessment — EcoTrack AI" },
