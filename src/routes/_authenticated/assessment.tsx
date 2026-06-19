@@ -60,7 +60,7 @@ function AssessmentPage() {
     if (user) {
       const { error } = await supabase.from("assessments").insert({
         user_id: user.id,
-        data: data as unknown as Record<string, unknown>,
+        data: data as never,
         total_kg: fp.totalKg,
         total_tonnes: fp.totalTonnes,
         score: fp.score,
