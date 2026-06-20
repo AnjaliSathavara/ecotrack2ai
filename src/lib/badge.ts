@@ -1,7 +1,14 @@
+/**
+ * Details of the sustainability badge earned by the user.
+ */
 export type BadgeLevel = {
+  /** The name of the badge (e.g., "Eco Champion") */
   name: string;
+  /** The numerical badge tier (1 to 5) */
   tier: 1 | 2 | 3 | 4 | 5;
+  /** Tailwind text color class name for styling the badge display */
   color: string;
+  /** A short description of the user's sustainability progress */
   description: string;
 };
 

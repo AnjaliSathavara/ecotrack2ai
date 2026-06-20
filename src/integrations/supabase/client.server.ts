@@ -5,6 +5,13 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./types";
 
+/**
+ * Creates a server-side Supabase client initialized with the Service Role Key.
+ * Bypasses Row Level Security (RLS) policies completely.
+ *
+ * @throws {Error} If SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY are missing from environment variables.
+ * @returns {import("@supabase/supabase-js").SupabaseClient<Database>} The Supabase client instance configured with admin access.
+ */
 function createSupabaseAdminClient() {
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -30,10 +37,14 @@ function createSupabaseAdminClient() {
 
 let _supabaseAdmin: ReturnType<typeof createSupabaseAdminClient> | undefined;
 
-// Server-side Supabase client with service role - bypasses RLS
-// SECURITY: Only use this for trusted server-side operations, never expose to client code
-// Load inside server handlers: const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-// Top-level import is safe only in other .server.ts modules - route files and *.functions.ts ship to the client bundle.
+/**
+ * A server-side Supabase client instance wrapped in a lazy-loading Proxy.
+ *
+ * SECURITY WARNING: This client uses the Service Role key, bypassing all Row Level Security (RLS).
+ * Only import and use this within secure server-only functions and API routes. Never expose it to client code.
+ * Best used inside server functions or by dynamic import:
+ * `const { supabaseAdmin } = await import("@/integrations/supabase/client.server");`
+ */
 export const supabaseAdmin = new Proxy({} as ReturnType<typeof createSupabaseAdminClient>, {
   get(_, prop, receiver) {
     if (!_supabaseAdmin) _supabaseAdmin = createSupabaseAdminClient();

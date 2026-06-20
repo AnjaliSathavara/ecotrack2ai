@@ -15,6 +15,13 @@ if (typeof globalThis.addEventListener === "function") {
   );
 }
 
+/**
+ * Retrieves and clears the most recently captured out-of-band global error or unhandled promise rejection.
+ * If the captured error has exceeded the TTL limit (5 seconds), it is ignored and discarded.
+ * Used primarily by server entrypoints to recover stack details swallowed by downstream frameworks.
+ *
+ * @returns {unknown | undefined} The captured error object if valid and within TTL, otherwise undefined.
+ */
 export function consumeLastCapturedError(): unknown {
   if (!lastCapturedError) return undefined;
   if (Date.now() - lastCapturedError.at > TTL_MS) {

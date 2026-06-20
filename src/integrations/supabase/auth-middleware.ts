@@ -4,6 +4,14 @@ import { getRequest } from "@tanstack/react-start/server";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./types";
 
+/**
+ * TanStack Start server-side middleware that requires and verifies Supabase authentication.
+ * It extracts the Bearer token from the incoming request's Authorization header,
+ * validates it against the Supabase JWT secret/claims, and attaches a custom authenticated
+ * Supabase client and the user's ID to the server function context.
+ *
+ * @throws {Error} If environment variables are missing, headers are absent, the authorization header is invalid, or the JWT token verification fails.
+ */
 export const requireSupabaseAuth = createMiddleware({ type: "function" }).server(
   async ({ next }) => {
     const SUPABASE_URL = process.env.SUPABASE_URL;

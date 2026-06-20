@@ -4,6 +4,13 @@ import { supabase } from "./client";
 
 // Must be registered as a global `functionMiddleware` in `src/start.ts`; otherwise
 // the browser never attaches the bearer token to serverFn RPCs.
+/**
+ * TanStack Start client middleware that retrieves the current Supabase session
+ * and attaches the session's JWT token as a Bearer Authorization header to server functions.
+ *
+ * This must be registered globally as a `functionMiddleware` in `src/start.ts`
+ * so that server-side RPC functions can correctly authenticate the calling client.
+ */
 export const attachSupabaseAuth = createMiddleware({ type: "function" }).client(
   async ({ next }) => {
     const { data } = await supabase.auth.getSession();

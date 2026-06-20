@@ -9,8 +9,19 @@ type SignInOptions = {
   extraParams?: Record<string, string>;
 };
 
+/**
+ * Lovable Cloud Platform integration layer.
+ */
 export const lovable = {
   auth: {
+    /**
+     * Initiates OAuth login using the specified identity provider.
+     * Integrates with Lovable Cloud Auth and links the resultant token session to Supabase.
+     *
+     * @param {"google" | "apple" | "microsoft" | "lovable"} provider - The OAuth login provider to authenticate with.
+     * @param {SignInOptions} [opts] - Optional parameters for the redirect URI and extra query parameters.
+     * @returns {Promise<any>} The authentication result object, containing redirected state, token details, or error.
+     */
     signInWithOAuth: async (
       provider: "google" | "apple" | "microsoft" | "lovable",
       opts?: SignInOptions,

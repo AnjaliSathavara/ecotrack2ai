@@ -26,6 +26,13 @@ const links = [
   { to: "/report", label: "Report" },
 ] as const;
 
+/**
+ * Main application navigation header.
+ * Displays application logo, links to platform assessment/dashboard pages,
+ * theme toggle selection, and user profile avatar menu with sign-out trigger.
+ *
+ * @returns {JSX.Element} The rendered navigation header.
+ */
 export function SiteNav() {
   const [open, setOpen] = useState(false);
   const { user, profile } = useAuth();
@@ -164,6 +171,12 @@ export function SiteNav() {
   );
 }
 
+/**
+ * Application footer layout.
+ * Shows general branding, platform links, legal copyrights, and sustainability mission summary.
+ *
+ * @returns {JSX.Element} The rendered site footer.
+ */
 export function SiteFooter() {
   return (
     <footer className="border-t border-border/60 bg-muted/30 mt-24">

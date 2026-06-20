@@ -2,10 +2,17 @@ import { useEffect, useState, createContext, useContext, type ReactNode } from "
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
+/**
+ * Represents the user's profile metadata stored in the database.
+ */
 export type Profile = {
+  /** The unique identifier matching the user's Supabase auth ID */
   id: string;
+  /** The user's display name or nickname, if set */
   display_name: string | null;
+  /** The URL pointing to the user's avatar image, if uploaded */
   avatar_url: string | null;
+  /** The ISO timestamp of when the profile was created */
   created_at: string;
 };
 
@@ -25,6 +32,17 @@ const Ctx = createContext<AuthCtx>({
   refreshProfile: async () => {},
 });
 
+/**
+ * Context provider that manages authentication state, listening to Supabase
+ * auth events and keeping the session, user, and profile information in sync.
+ *
+ * It automatically fetches user profile details from the database when a user is signed in
+ * and cleans up session and profile states when the user signs out.
+ *
+ * @param {object} props - The component props.
+ * @param {ReactNode} props.children - The child components that need access to authentication state.
+ * @returns {JSX.Element} The provider component wrapping children with the AuthCtx context.
+ */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
@@ -74,6 +92,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
+/**
+ * Custom hook to access the current authentication state, user metadata,
+ * user database profile, loading status, and profile refresh action.
+ * Must be wrapped inside an `<AuthProvider>` to function correctly.
+ *
+ * @returns {AuthCtx} The authentication context state and actions.
+ */
 export function useAuth() {
   return useContext(Ctx);
 }

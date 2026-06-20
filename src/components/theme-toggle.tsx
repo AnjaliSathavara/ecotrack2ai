@@ -8,6 +8,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+/**
+ * A theme selection toggle button.
+ * Triggers a dropdown menu with Light, Dark, and System options to change the active color scheme.
+ *
+ * @returns {JSX.Element} The rendered dropdown toggle.
+ */
 export function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme();
   return (

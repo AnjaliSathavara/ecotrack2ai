@@ -1,3 +1,9 @@
+/**
+ * Renders a fallback HTML page structure for catastrophic Server-Side Rendering (SSR) or request errors.
+ * Provides basic styling and links/buttons for reloading or returning home.
+ *
+ * @returns {string} The raw HTML string representing the fallback error page.
+ */
 export function renderErrorPage(): string {
   return `<!doctype html>
 <html lang="en">

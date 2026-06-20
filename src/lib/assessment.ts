@@ -1,19 +1,38 @@
+/**
+ * Structure of the carbon footprint assessment questionnaire answers.
+ */
 export type AssessmentData = {
-  transportation: number; // km/week by car
-  publicTransit: number; // km/week
-  flights: number; // short-haul flights / year
-  electricity: number; // kWh / month
-  renewableShare: number; // 0-100 %
+  /** Average distance traveled by car (in km per week) */
+  transportation: number;
+  /** Average distance traveled via public transit (in km per week) */
+  publicTransit: number;
+  /** Number of short-haul flights taken annually */
+  flights: number;
+  /** Average monthly electricity consumption (in kWh) */
+  electricity: number;
+  /** Share of consumed electricity sourced from renewable sources (0 to 100) */
+  renewableShare: number;
+  /** General dietary category */
   diet: "vegan" | "vegetarian" | "omnivore" | "heavy-meat";
-  localFood: number; // 0-100 %
+  /** Percentage of food sourced locally or regionally (0 to 100) */
+  localFood: number;
+  /** General non-food consumer goods shopping frequency */
   shoppingFrequency: "low" | "medium" | "high" | "very-high";
+  /** Flag indicating high volume/consumption of fast fashion brands */
   fastFashion: boolean;
-  recyclingRate: number; // 0-100 %
+  /** Percentage of recyclable household waste diverted from landfills (0 to 100) */
+  recyclingRate: number;
+  /** Flag indicating participation in composting organic waste */
   compost: boolean;
+  /** Overall travel and tourism habits/frequency */
   travelHabits: "rare" | "annual" | "frequent" | "very-frequent";
+  /** Optional ISO timestamp of the last assessment update */
   updatedAt?: string;
 };
 
+/**
+ * Default assessment answers used to populate a new profile's carbon footprint form.
+ */
 export const DEFAULT_ASSESSMENT: AssessmentData = {
   transportation: 120,
   publicTransit: 30,

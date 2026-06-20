@@ -2,6 +2,16 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./types";
 
+/**
+ * Creates the standard client-side Supabase client.
+ * Automatically resolves environment variables using `import.meta.env` for Vite client bundles,
+ * and falls back to `process.env` when executing during Server-Side Rendering (SSR).
+ *
+ * Configures persistent local storage for auth session on the browser, and session-only behavior on the server.
+ *
+ * @throws {Error} If SUPABASE_URL or SUPABASE_PUBLISHABLE_KEY are missing from environment variables.
+ * @returns {import("@supabase/supabase-js").SupabaseClient<Database>} The Supabase client instance.
+ */
 function createSupabaseClient() {
   // Use import.meta.env for client-side (Vite build-time replacement)
   // Fall back to process.env for SSR (server-side rendering)
@@ -30,8 +40,14 @@ function createSupabaseClient() {
 
 let _supabase: ReturnType<typeof createSupabaseClient> | undefined;
 
-// Import the supabase client like this:
-// import { supabase } from "@/integrations/supabase/client";
+/**
+ * Standard Supabase client instance wrapped in a lazy-loading Proxy.
+ * Safe for use in both browser environments and during Server-Side Rendering (SSR).
+ * Uses standard RLS policies configured on your database tables.
+ *
+ * @example
+ * import { supabase } from "@/integrations/supabase/client";
+ */
 export const supabase = new Proxy({} as ReturnType<typeof createSupabaseClient>, {
   get(_, prop, receiver) {
     if (!_supabase) _supabase = createSupabaseClient();

@@ -18,6 +18,14 @@ function getSystem(): Resolved {
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
+/**
+ * Component that wraps the application and supplies theme state (light/dark/system).
+ * Resolves standard system preferences and applies the active choice to the root element.
+ *
+ * @param {object} props - Component props.
+ * @param {ReactNode} props.children - Child elements that will receive the theme context.
+ * @returns {JSX.Element} The context provider component.
+ */
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("system");
   const [resolved, setResolved] = useState<Resolved>("light");
@@ -65,6 +73,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   );
 }
 
+/**
+ * Custom hook to access and toggle the current application theme.
+ * Must be used inside a `<ThemeProvider>`.
+ *
+ * @throws {Error} If used outside of a ThemeProvider.
+ * @returns {Ctx} The active theme, resolved theme type (light or dark), and update handlers.
+ */
 export function useTheme() {
   const ctx = useContext(ThemeCtx);
   if (!ctx) throw new Error("useTheme must be used within ThemeProvider");
