@@ -58,7 +58,9 @@ describe("Profile Page", () => {
 
     // Assert headers
     expect(screen.getByText("Your profile")).toBeInTheDocument();
-    expect(screen.getByText("Manage your personal details and view your sustainability progress.")).toBeInTheDocument();
+    expect(
+      screen.getByText("Manage your personal details and view your sustainability progress."),
+    ).toBeInTheDocument();
 
     // Assert input fields loaded with profile values
     const nameInput = screen.getByLabelText("Display name") as HTMLInputElement;
