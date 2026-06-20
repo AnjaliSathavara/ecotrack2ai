@@ -31,6 +31,12 @@ export const DEFAULT_ASSESSMENT: AssessmentData = {
 
 const KEY = "ecotrack-assessment";
 
+/**
+ * Loads the user's latest carbon footprint assessment data from browser localStorage.
+ * Returns null if window is undefined (e.g., during Server-Side Rendering) or if no assessment exists.
+ *
+ * @returns {AssessmentData | null} The saved assessment data or null if not found.
+ */
 export function loadAssessment(): AssessmentData | null {
   if (typeof window === "undefined") return null;
   try {
@@ -42,11 +48,24 @@ export function loadAssessment(): AssessmentData | null {
   }
 }
 
-export function saveAssessment(d: AssessmentData) {
+/**
+ * Saves the user's carbon footprint assessment data to localStorage, injecting an updatedAt timestamp.
+ *
+ * @param {AssessmentData} d - The user's assessment data to save.
+ * @returns {void}
+ */
+export function saveAssessment(d: AssessmentData): void {
   localStorage.setItem(KEY, JSON.stringify({ ...d, updatedAt: new Date().toISOString() }));
 }
 
-// Annual tonnes CO2e (rough but reasonable factors)
+/**
+ * Computes the estimated annual carbon footprint based on the provided assessment habits.
+ * Factors in transportation, flights, electricity (with renewable share offset), diet (sourcing offsets),
+ * shopping habits, fast-fashion choices, recycling/composting rates, and general travel habits.
+ *
+ * @param {AssessmentData} d - The assessment data.
+ * @returns {object} Calculated footprint results including category breakdowns, total kg, total tonnes, score (0-100), and rating description.
+ */
 export function computeFootprint(d: AssessmentData) {
   const car = d.transportation * 52 * 0.18; // kg
   const transit = d.publicTransit * 52 * 0.05;
@@ -75,13 +94,18 @@ export function computeFootprint(d: AssessmentData) {
   // Score: 100 great, 0 very high. Global avg ~4.7 t, target 2 t.
   const score = Math.max(0, Math.min(100, Math.round(100 - (totalTonnes - 1.5) * 12)));
   const rating =
-    score >= 85 ? "Champion" :
-    score >= 70 ? "Excellent" :
-    score >= 55 ? "Good" :
-    score >= 40 ? "Fair" :
-    score >= 25 ? "Needs Work" : "High Impact";
-  const ratingColor =
-    score >= 70 ? "text-leaf" : score >= 40 ? "text-sun" : "text-destructive";
+    score >= 85
+      ? "Champion"
+      : score >= 70
+        ? "Excellent"
+        : score >= 55
+          ? "Good"
+          : score >= 40
+            ? "Fair"
+            : score >= 25
+              ? "Needs Work"
+              : "High Impact";
+  const ratingColor = score >= 70 ? "text-leaf" : score >= 40 ? "text-sun" : "text-destructive";
 
   return { breakdown, totalKg, totalTonnes, score, rating, ratingColor };
 }

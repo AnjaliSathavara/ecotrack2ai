@@ -17,7 +17,11 @@ export const Route = createFileRoute("/_authenticated/assistant")({
   head: () => ({
     meta: [
       { title: "AI Sustainability Assistant — EcoTrack AI" },
-      { name: "description", content: "Chat with an AI sustainability coach. Get personalized, science-based environmental guidance." },
+      {
+        name: "description",
+        content:
+          "Chat with an AI sustainability coach. Get personalized, science-based environmental guidance.",
+      },
     ],
   }),
   component: AssistantPage,
@@ -73,7 +77,10 @@ function AssistantPage() {
       if (!conversationIdRef.current) {
         const firstUser = messages.find((m) => m.role === "user");
         const text = firstUser
-          ? firstUser.parts.map((p) => (p.type === "text" ? p.text : "")).join("").slice(0, 80)
+          ? firstUser.parts
+              .map((p) => (p.type === "text" ? p.text : ""))
+              .join("")
+              .slice(0, 80)
           : "New conversation";
         const { data: conv, error: cErr } = await supabase
           .from("conversations")
@@ -143,7 +150,9 @@ function AssistantPage() {
                   >
                     <Sparkles className="size-7" />
                   </div>
-                  <h2 className="mt-4 text-xl font-semibold">Ask me anything about sustainability</h2>
+                  <h2 className="mt-4 text-xl font-semibold">
+                    Ask me anything about sustainability
+                  </h2>
                   <p className="mt-2 text-sm text-muted-foreground">
                     From carbon footprints to climate-friendly recipes, I'm here to help.
                   </p>
@@ -168,9 +177,7 @@ function AssistantPage() {
             )}
 
             {messages.map((m: UIMessage) => {
-              const text = m.parts
-                .map((p) => (p.type === "text" ? p.text : ""))
-                .join("");
+              const text = m.parts.map((p) => (p.type === "text" ? p.text : "")).join("");
               const isUser = m.role === "user";
               return (
                 <article
@@ -221,7 +228,10 @@ function AssistantPage() {
                   : ""}
             </div>
             {status === "submitted" && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground" aria-hidden="true">
+              <div
+                className="flex items-center gap-2 text-sm text-muted-foreground"
+                aria-hidden="true"
+              >
                 <Loader2 className="size-4 animate-spin" /> Thinking…
               </div>
             )}

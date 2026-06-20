@@ -1,7 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteFooter, SiteNav } from "@/components/site-nav";
 import { useEffect, useMemo, useState } from "react";
-import { computeFootprint, loadAssessment, DEFAULT_ASSESSMENT, type AssessmentData } from "@/lib/assessment";
+import {
+  computeFootprint,
+  loadAssessment,
+  DEFAULT_ASSESSMENT,
+  type AssessmentData,
+} from "@/lib/assessment";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -33,13 +38,25 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
       { title: "Sustainability Dashboard — EcoTrack AI" },
-      { name: "description", content: "See your carbon score, impact breakdown, and progress toward a sustainable footprint." },
+      {
+        name: "description",
+        content:
+          "See your carbon score, impact breakdown, and progress toward a sustainable footprint.",
+      },
     ],
   }),
   component: DashboardPage,
 });
 
-const CHART_COLORS = ["var(--leaf)", "var(--ocean)", "var(--sun)", "var(--earth)", "#7dd3fc", "#a78bfa", "#f472b6"];
+const CHART_COLORS = [
+  "var(--leaf)",
+  "var(--ocean)",
+  "var(--sun)",
+  "var(--earth)",
+  "#7dd3fc",
+  "#a78bfa",
+  "#f472b6",
+];
 
 type HistoryRow = {
   id: string;
@@ -82,7 +99,8 @@ function DashboardPage() {
 
   const fp = useMemo(() => computeFootprint(data), [data]);
   const badge = badgeForScore(fp.score);
-  const greeting = profile?.display_name?.split(" ")[0] || user?.email?.split("@")[0] || "EcoTracker";
+  const greeting =
+    profile?.display_name?.split(" ")[0] || user?.email?.split("@")[0] || "EcoTracker";
 
   const breakdownData = Object.entries(fp.breakdown).map(([name, value]) => ({ name, value }));
   const radarData = breakdownData.map((d) => ({
@@ -90,13 +108,11 @@ function DashboardPage() {
     you: Math.min(100, Math.round((d.value / fp.totalKg) * 100 * 3)),
   }));
 
-  const trendData = [...history]
-    .reverse()
-    .map((h) => ({
-      date: new Date(h.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-      score: h.score,
-      tonnes: Number(h.total_tonnes),
-    }));
+  const trendData = [...history].reverse().map((h) => ({
+    date: new Date(h.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+    score: h.score,
+    tonnes: Number(h.total_tonnes),
+  }));
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -105,13 +121,18 @@ function DashboardPage() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <div className="text-sm font-medium text-leaf">Welcome back</div>
-            <h1 className="mt-1 text-3xl font-bold sm:text-4xl">
-              Hi {greeting} 👋
-            </h1>
+            <h1 className="mt-1 text-3xl font-bold sm:text-4xl">Hi {greeting} 👋</h1>
             <p className="mt-2 text-muted-foreground flex flex-wrap items-center gap-2">
-              {hasAssessment
-                ? <>Your latest sustainability snapshot. <Badge variant="secondary" className={badge.color}>{badge.name}</Badge></>
-                : <>Showing example data — complete the assessment for personalized results.</>}
+              {hasAssessment ? (
+                <>
+                  Your latest sustainability snapshot.{" "}
+                  <Badge variant="secondary" className={badge.color}>
+                    {badge.name}
+                  </Badge>
+                </>
+              ) : (
+                <>Showing example data — complete the assessment for personalized results.</>
+              )}
             </p>
           </div>
           <Button asChild variant="outline">
@@ -159,10 +180,22 @@ function DashboardPage() {
                 aria-label={`Bar chart of annual emissions by category: ${breakdownData.map((d) => `${d.name} ${d.value} kilograms`).join(", ")}.`}
               >
                 <ResponsiveContainer>
-                  <BarChart data={breakdownData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                  <BarChart
+                    data={breakdownData}
+                    margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
+                  >
                     <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="name" tickLine={false} axisLine={false} style={{ fontSize: 12, fill: "var(--muted-foreground)" }} />
-                    <YAxis tickLine={false} axisLine={false} style={{ fontSize: 12, fill: "var(--muted-foreground)" }} />
+                    <XAxis
+                      dataKey="name"
+                      tickLine={false}
+                      axisLine={false}
+                      style={{ fontSize: 12, fill: "var(--muted-foreground)" }}
+                    />
+                    <YAxis
+                      tickLine={false}
+                      axisLine={false}
+                      style={{ fontSize: 12, fill: "var(--muted-foreground)" }}
+                    />
                     <Tooltip
                       contentStyle={{
                         background: "var(--popover)",
@@ -205,7 +238,12 @@ function DashboardPage() {
                       paddingAngle={2}
                     >
                       {breakdownData.map((_, i) => (
-                        <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} stroke="var(--card)" strokeWidth={2} />
+                        <Cell
+                          key={i}
+                          fill={CHART_COLORS[i % CHART_COLORS.length]}
+                          stroke="var(--card)"
+                          strokeWidth={2}
+                        />
                       ))}
                     </Pie>
                     <Tooltip
@@ -253,7 +291,10 @@ function DashboardPage() {
                       >
                         <div
                           className="h-full rounded-full"
-                          style={{ width: `${pct}%`, background: CHART_COLORS[i % CHART_COLORS.length] }}
+                          style={{
+                            width: `${pct}%`,
+                            background: CHART_COLORS[i % CHART_COLORS.length],
+                          }}
                         />
                       </div>
                     </li>
@@ -277,7 +318,10 @@ function DashboardPage() {
                 <ResponsiveContainer>
                   <RadarChart data={radarData}>
                     <PolarGrid stroke="var(--border)" />
-                    <PolarAngleAxis dataKey="category" style={{ fontSize: 11, fill: "var(--muted-foreground)" }} />
+                    <PolarAngleAxis
+                      dataKey="category"
+                      style={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                    />
                     <Radar
                       dataKey="you"
                       stroke="var(--leaf)"
@@ -296,20 +340,56 @@ function DashboardPage() {
           <div className="mt-6 grid gap-5 lg:grid-cols-3">
             <Card className="lg:col-span-2 shadow-soft">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2"><History className="size-5 text-leaf" /> Progress over time</CardTitle>
-                <CardDescription>Your carbon score across your last {history.length} assessments</CardDescription>
+                <CardTitle className="flex items-center gap-2">
+                  <History className="size-5 text-leaf" /> Progress over time
+                </CardTitle>
+                <CardDescription>
+                  Your carbon score across your last {history.length} assessments
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-64" role="img" aria-label={`Line chart of carbon score across ${trendData.length} assessments`}>
+                <div
+                  className="h-64"
+                  role="img"
+                  aria-label={`Line chart of carbon score across ${trendData.length} assessments`}
+                >
                   <ResponsiveContainer>
-                    <LineChart data={trendData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-                      <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
-                      <XAxis dataKey="date" tickLine={false} axisLine={false} style={{ fontSize: 12, fill: "var(--muted-foreground)" }} />
-                      <YAxis domain={[0, 100]} tickLine={false} axisLine={false} style={{ fontSize: 12, fill: "var(--muted-foreground)" }} />
-                      <Tooltip
-                        contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12, color: "var(--popover-foreground)" }}
+                    <LineChart
+                      data={trendData}
+                      margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
+                    >
+                      <CartesianGrid
+                        stroke="var(--border)"
+                        strokeDasharray="3 3"
+                        vertical={false}
                       />
-                      <Line type="monotone" dataKey="score" stroke="var(--leaf)" strokeWidth={3} dot={{ r: 4, fill: "var(--leaf)" }} />
+                      <XAxis
+                        dataKey="date"
+                        tickLine={false}
+                        axisLine={false}
+                        style={{ fontSize: 12, fill: "var(--muted-foreground)" }}
+                      />
+                      <YAxis
+                        domain={[0, 100]}
+                        tickLine={false}
+                        axisLine={false}
+                        style={{ fontSize: 12, fill: "var(--muted-foreground)" }}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          background: "var(--popover)",
+                          border: "1px solid var(--border)",
+                          borderRadius: 12,
+                          color: "var(--popover-foreground)",
+                        }}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="score"
+                        stroke="var(--leaf)"
+                        strokeWidth={3}
+                        dot={{ r: 4, fill: "var(--leaf)" }}
+                      />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
@@ -323,10 +403,21 @@ function DashboardPage() {
               <CardContent>
                 <ol className="space-y-3">
                   {history.slice(0, 6).map((h) => (
-                    <li key={h.id} className="flex items-center justify-between gap-3 rounded-xl border border-border bg-muted/20 p-3">
+                    <li
+                      key={h.id}
+                      className="flex items-center justify-between gap-3 rounded-xl border border-border bg-muted/20 p-3"
+                    >
                       <div>
-                        <div className="text-sm font-medium">{new Date(h.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</div>
-                        <div className="text-xs text-muted-foreground">{Number(h.total_tonnes).toFixed(2)} t CO₂e · {h.rating}</div>
+                        <div className="text-sm font-medium">
+                          {new Date(h.created_at).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {Number(h.total_tonnes).toFixed(2)} t CO₂e · {h.rating}
+                        </div>
                       </div>
                       <div className="font-display text-xl font-bold tabular-nums">{h.score}</div>
                     </li>
@@ -336,7 +427,6 @@ function DashboardPage() {
             </Card>
           </div>
         )}
-
 
         {/* CTA */}
         <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -391,7 +481,8 @@ function StatCard({
   sub: string;
   tone: "leaf" | "ocean" | "destructive";
 }) {
-  const toneClass = tone === "leaf" ? "text-leaf" : tone === "ocean" ? "text-ocean" : "text-destructive";
+  const toneClass =
+    tone === "leaf" ? "text-leaf" : tone === "ocean" ? "text-ocean" : "text-destructive";
   return (
     <Card className="shadow-soft">
       <CardContent className="p-6">

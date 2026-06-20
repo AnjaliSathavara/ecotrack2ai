@@ -42,27 +42,45 @@ function ForgotPasswordPage() {
           <span className="grid size-9 place-items-center rounded-xl bg-gradient-primary text-primary-foreground">
             <Leaf className="size-5" />
           </span>
-          <span className="font-display text-lg font-bold">EcoTrack <span className="text-gradient">AI</span></span>
+          <span className="font-display text-lg font-bold">
+            EcoTrack <span className="text-gradient">AI</span>
+          </span>
         </div>
         <Card className="p-6 sm:p-8 shadow-elegant">
           <h1 className="text-2xl font-bold">Reset your password</h1>
-          <p className="mt-1 text-sm text-muted-foreground">We'll email you a secure link to set a new password.</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            We'll email you a secure link to set a new password.
+          </p>
           {sent ? (
             <div className="mt-6 rounded-xl border border-border bg-muted/30 p-4 text-sm">
-              If an account exists for <b>{email}</b>, a reset link is on its way. The link expires soon for security.
+              If an account exists for <b>{email}</b>, a reset link is on its way. The link expires
+              soon for security.
             </div>
           ) : (
             <form onSubmit={onSubmit} className="mt-6 space-y-4">
               <div className="space-y-1.5">
                 <Label>Email</Label>
-                <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required />
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  required
+                />
               </div>
-              <Button type="submit" className="w-full bg-gradient-primary text-primary-foreground" disabled={busy}>
+              <Button
+                type="submit"
+                className="w-full bg-gradient-primary text-primary-foreground"
+                disabled={busy}
+              >
                 {busy && <Loader2 className="mr-2 size-4 animate-spin" />} Send reset link
               </Button>
             </form>
           )}
-          <Link to="/auth" className="mt-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+          <Link
+            to="/auth"
+            className="mt-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+          >
             <ArrowLeft className="size-4" /> Back to sign in
           </Link>
         </Card>

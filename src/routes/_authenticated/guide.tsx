@@ -23,7 +23,11 @@ export const Route = createFileRoute("/_authenticated/guide")({
   head: () => ({
     meta: [
       { title: "Pollution Reduction Guide — EcoTrack AI" },
-      { name: "description", content: "Practical, AI-curated actions to reduce pollution and live more sustainably — with weekly action plans." },
+      {
+        name: "description",
+        content:
+          "Practical, AI-curated actions to reduce pollution and live more sustainably — with weekly action plans.",
+      },
     ],
   }),
   component: GuidePage,
@@ -136,7 +140,9 @@ function GuidePage() {
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
               {WEEK.map((w) => (
                 <div key={w.day} className="rounded-2xl bg-white/10 p-4 backdrop-blur">
-                  <div className="text-xs font-semibold uppercase tracking-wider opacity-80">{w.day}</div>
+                  <div className="text-xs font-semibold uppercase tracking-wider opacity-80">
+                    {w.day}
+                  </div>
                   <div className="mt-1 text-sm">{w.action}</div>
                 </div>
               ))}
@@ -151,7 +157,9 @@ function GuidePage() {
               <h2 className="text-2xl font-bold">Action library</h2>
               <TabsList className="flex-wrap h-auto">
                 {CATEGORIES.map((c) => (
-                  <TabsTrigger key={c} value={c}>{c}</TabsTrigger>
+                  <TabsTrigger key={c} value={c}>
+                    {c}
+                  </TabsTrigger>
                 ))}
               </TabsList>
             </div>
@@ -160,13 +168,18 @@ function GuidePage() {
               <TabsContent key={cat} value={cat} className="mt-6">
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                   {ACTIONS.filter((a) => cat === "All" || a.category === cat).map((a) => (
-                    <Card key={a.title} className="shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-elegant">
+                    <Card
+                      key={a.title}
+                      className="shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-elegant"
+                    >
                       <CardContent className="p-6">
                         <div className="flex items-center justify-between">
                           <div className="grid size-10 place-items-center rounded-xl bg-gradient-primary text-primary-foreground">
                             <a.icon className="size-5" />
                           </div>
-                          <Badge variant="secondary" className="text-xs">{a.category}</Badge>
+                          <Badge variant="secondary" className="text-xs">
+                            {a.category}
+                          </Badge>
                         </div>
                         <h3 className="mt-4 font-semibold">{a.title}</h3>
                         <p className="mt-1 text-sm text-muted-foreground">{a.body}</p>
@@ -188,10 +201,15 @@ function GuidePage() {
               <TreePine className="size-6 text-leaf" />
               <div>
                 <div className="font-semibold">Want a plan tuned to you?</div>
-                <div className="text-sm text-muted-foreground">Your AI coach can build one in seconds.</div>
+                <div className="text-sm text-muted-foreground">
+                  Your AI coach can build one in seconds.
+                </div>
               </div>
             </div>
-            <Button asChild className="bg-gradient-primary text-primary-foreground shadow-elegant hover:opacity-90">
+            <Button
+              asChild
+              className="bg-gradient-primary text-primary-foreground shadow-elegant hover:opacity-90"
+            >
               <Link to="/assistant">Open assistant</Link>
             </Button>
           </CardContent>

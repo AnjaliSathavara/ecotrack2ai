@@ -95,12 +95,16 @@ function Home() {
                 <span className="text-gradient">Act on what matters.</span>
               </h1>
               <p className="mt-6 max-w-xl text-lg text-muted-foreground">
-                EcoTrack AI turns your daily habits into a clear carbon picture — then guides
-                you, week by week, toward a lower-impact life with an AI sustainability coach
-                in your pocket.
+                EcoTrack AI turns your daily habits into a clear carbon picture — then guides you,
+                week by week, toward a lower-impact life with an AI sustainability coach in your
+                pocket.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <Button asChild size="lg" className="bg-gradient-primary text-primary-foreground shadow-elegant hover:opacity-90">
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-gradient-primary text-primary-foreground shadow-elegant hover:opacity-90"
+                >
                   <Link to="/assessment">
                     Start free assessment <ArrowRight className="ml-2 size-4" />
                   </Link>
@@ -110,7 +114,12 @@ function Home() {
                 </Button>
               </div>
               <ul className="mt-8 grid gap-2 text-sm text-muted-foreground sm:grid-cols-2">
-                {["No signup required", "Private by default", "Science-based factors", "Beautiful exports"].map((t) => (
+                {[
+                  "No signup required",
+                  "Private by default",
+                  "Science-based factors",
+                  "Beautiful exports",
+                ].map((t) => (
                   <li key={t} className="flex items-center gap-2">
                     <CheckCircle2 className="size-4 text-leaf" /> {t}
                   </li>
@@ -123,8 +132,12 @@ function Home() {
               <div className="relative glass rounded-3xl p-6 shadow-elegant">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs uppercase tracking-wider text-muted-foreground">Your footprint</div>
-                    <div className="mt-1 text-4xl font-bold font-display">3.2<span className="text-base text-muted-foreground"> t CO₂e/yr</span></div>
+                    <div className="text-xs uppercase tracking-wider text-muted-foreground">
+                      Your footprint
+                    </div>
+                    <div className="mt-1 text-4xl font-bold font-display">
+                      3.2<span className="text-base text-muted-foreground"> t CO₂e/yr</span>
+                    </div>
                   </div>
                   <div className="grid size-14 place-items-center rounded-2xl bg-gradient-primary text-primary-foreground shadow-elegant">
                     <Leaf className="size-7" />
@@ -158,7 +171,8 @@ function Home() {
                     <Bot className="size-4 text-leaf" /> AI Coach
                   </div>
                   <p className="mt-1 text-muted-foreground">
-                    Switching two car trips per week to cycling could cut <b className="text-foreground">~210 kg CO₂e/yr</b>.
+                    Switching two car trips per week to cycling could cut{" "}
+                    <b className="text-foreground">~210 kg CO₂e/yr</b>.
                   </p>
                 </div>
               </div>
@@ -172,7 +186,9 @@ function Home() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 grid grid-cols-2 gap-8 md:grid-cols-4">
           {stats.map((s) => (
             <div key={s.label} className="text-center">
-              <div className="font-display text-3xl font-bold text-gradient sm:text-4xl">{s.value}</div>
+              <div className="font-display text-3xl font-bold text-gradient sm:text-4xl">
+                {s.value}
+              </div>
               <div className="mt-1 text-sm text-muted-foreground">{s.label}</div>
             </div>
           ))}
@@ -183,10 +199,12 @@ function Home() {
       <section className="mx-auto max-w-7xl px-4 sm:px-6 py-20 lg:py-28">
         <div className="max-w-2xl">
           <div className="text-sm font-medium text-leaf">Platform</div>
-          <h2 className="mt-2 text-3xl font-bold sm:text-4xl">Everything you need to live lighter.</h2>
+          <h2 className="mt-2 text-3xl font-bold sm:text-4xl">
+            Everything you need to live lighter.
+          </h2>
           <p className="mt-3 text-muted-foreground">
-            A complete toolkit: science-based assessment, AI guidance, action plans, and
-            polished reports — all in one elegant workspace.
+            A complete toolkit: science-based assessment, AI guidance, action plans, and polished
+            reports — all in one elegant workspace.
           </p>
         </div>
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -212,10 +230,12 @@ function Home() {
           <div className="absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] [background-size:24px_24px]" />
           <div className="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
-              <h2 className="font-display text-3xl font-bold sm:text-4xl">Your lower-carbon life starts in 2 minutes.</h2>
+              <h2 className="font-display text-3xl font-bold sm:text-4xl">
+                Your lower-carbon life starts in 2 minutes.
+              </h2>
               <p className="mt-3 max-w-xl text-primary-foreground/90">
-                Answer six quick questions. Get a personalized footprint, an AI coach, and a
-                weekly action plan tuned to where it counts most for you.
+                Answer six quick questions. Get a personalized footprint, an AI coach, and a weekly
+                action plan tuned to where it counts most for you.
               </p>
             </div>
             <Button asChild size="lg" variant="secondary" className="self-start lg:self-auto">

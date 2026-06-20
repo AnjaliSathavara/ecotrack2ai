@@ -72,9 +72,17 @@ export function SiteNav() {
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full" aria-label="Account menu">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full"
+                  aria-label="Account menu"
+                >
                   <Avatar className="size-9">
-                    <AvatarImage src={profile?.avatar_url ?? undefined} alt={profile?.display_name ?? user.email ?? ""} />
+                    <AvatarImage
+                      src={profile?.avatar_url ?? undefined}
+                      alt={profile?.display_name ?? user.email ?? ""}
+                    />
                     <AvatarFallback className="bg-gradient-primary text-primary-foreground text-sm font-semibold">
                       {initials}
                     </AvatarFallback>
@@ -84,17 +92,24 @@ export function SiteNav() {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel className="flex flex-col gap-0.5">
                   <span className="text-sm">{profile?.display_name || "EcoTracker"}</span>
-                  <span className="text-xs font-normal text-muted-foreground truncate">{user.email}</span>
+                  <span className="text-xs font-normal text-muted-foreground truncate">
+                    {user.email}
+                  </span>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link to="/profile"><UserIcon className="mr-2 size-4" /> Profile</Link>
+                  <Link to="/profile">
+                    <UserIcon className="mr-2 size-4" /> Profile
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/dashboard">Dashboard</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive">
+                <DropdownMenuItem
+                  onClick={handleSignOut}
+                  className="text-destructive focus:text-destructive"
+                >
                   <LogOut className="mr-2 size-4" /> Sign out
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -104,8 +119,14 @@ export function SiteNav() {
               <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
                 <Link to="/auth">Sign in</Link>
               </Button>
-              <Button asChild size="sm" className="hidden sm:inline-flex bg-gradient-primary text-primary-foreground shadow-elegant hover:opacity-90">
-                <Link to="/auth" search={{ tab: "signup", redirect: "/dashboard" }}>Get Started</Link>
+              <Button
+                asChild
+                size="sm"
+                className="hidden sm:inline-flex bg-gradient-primary text-primary-foreground shadow-elegant hover:opacity-90"
+              >
+                <Link to="/auth" search={{ tab: "signup", redirect: "/dashboard" }}>
+                  Get Started
+                </Link>
               </Button>
             </>
           )}
@@ -129,7 +150,9 @@ export function SiteNav() {
                 ))}
                 {!user && (
                   <Button asChild className="mt-4 bg-gradient-primary text-primary-foreground">
-                    <Link to="/auth" onClick={() => setOpen(false)}>Sign in</Link>
+                    <Link to="/auth" onClick={() => setOpen(false)}>
+                      Sign in
+                    </Link>
                   </Button>
                 )}
               </div>
@@ -153,23 +176,44 @@ export function SiteFooter() {
             <span className="font-display font-bold">EcoTrack AI</span>
           </div>
           <p className="mt-3 text-sm text-muted-foreground max-w-xs">
-            AI-powered sustainability intelligence for individuals and organizations committed to a regenerative future.
+            AI-powered sustainability intelligence for individuals and organizations committed to a
+            regenerative future.
           </p>
         </div>
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <div className="font-medium mb-2">Platform</div>
             <ul className="space-y-1 text-muted-foreground">
-              <li><Link to="/assessment" className="hover:text-foreground">Assessment</Link></li>
-              <li><Link to="/dashboard" className="hover:text-foreground">Dashboard</Link></li>
-              <li><Link to="/assistant" className="hover:text-foreground">AI Assistant</Link></li>
+              <li>
+                <Link to="/assessment" className="hover:text-foreground">
+                  Assessment
+                </Link>
+              </li>
+              <li>
+                <Link to="/dashboard" className="hover:text-foreground">
+                  Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link to="/assistant" className="hover:text-foreground">
+                  AI Assistant
+                </Link>
+              </li>
             </ul>
           </div>
           <div>
             <div className="font-medium mb-2">Resources</div>
             <ul className="space-y-1 text-muted-foreground">
-              <li><Link to="/guide" className="hover:text-foreground">Action Guide</Link></li>
-              <li><Link to="/report" className="hover:text-foreground">Reports</Link></li>
+              <li>
+                <Link to="/guide" className="hover:text-foreground">
+                  Action Guide
+                </Link>
+              </li>
+              <li>
+                <Link to="/report" className="hover:text-foreground">
+                  Reports
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

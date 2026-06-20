@@ -26,7 +26,10 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "Sign In — EcoTrack AI" },
-      { name: "description", content: "Sign in or create your EcoTrack AI account to track your sustainability journey." },
+      {
+        name: "description",
+        content: "Sign in or create your EcoTrack AI account to track your sustainability journey.",
+      },
     ],
   }),
   component: AuthPage,
@@ -59,10 +62,13 @@ function AuthPage() {
         </div>
         <div className="relative">
           <h2 className="font-display text-4xl font-bold leading-tight">
-            Your lower-carbon life,<br />intelligently guided.
+            Your lower-carbon life,
+            <br />
+            intelligently guided.
           </h2>
           <p className="mt-4 max-w-md text-primary-foreground/90">
-            Join thousands tracking their footprint, learning from an AI coach, and acting on what matters most.
+            Join thousands tracking their footprint, learning from an AI coach, and acting on what
+            matters most.
           </p>
           <ul className="mt-8 space-y-2 text-sm text-primary-foreground/90">
             <li>✓ Personalized carbon assessment & dashboard</li>
@@ -70,18 +76,24 @@ function AuthPage() {
             <li>✓ Monthly impact reports & weekly action plans</li>
           </ul>
         </div>
-        <div className="relative text-xs text-primary-foreground/70">© {new Date().getFullYear()} EcoTrack AI</div>
+        <div className="relative text-xs text-primary-foreground/70">
+          © {new Date().getFullYear()} EcoTrack AI
+        </div>
       </div>
 
       {/* Form side */}
       <div className="flex items-center justify-center p-6 sm:p-12 relative">
-        <div className="absolute top-4 right-4"><ThemeToggle /></div>
+        <div className="absolute top-4 right-4">
+          <ThemeToggle />
+        </div>
         <div className="w-full max-w-md animate-fade-in">
           <div className="lg:hidden flex items-center gap-2 mb-8 justify-center">
             <span className="grid size-9 place-items-center rounded-xl bg-gradient-primary text-primary-foreground">
               <Leaf className="size-5" />
             </span>
-            <span className="font-display text-lg font-bold">EcoTrack <span className="text-gradient">AI</span></span>
+            <span className="font-display text-lg font-bold">
+              EcoTrack <span className="text-gradient">AI</span>
+            </span>
           </div>
 
           <Card className="p-6 sm:p-8 shadow-elegant">
@@ -138,10 +150,22 @@ function GoogleButton({ onStart }: { onStart?: () => void }) {
 function GoogleIcon() {
   return (
     <svg className="mr-2 size-4" viewBox="0 0 24 24" aria-hidden="true">
-      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.99.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-      <path fill="#FBBC05" d="M5.84 14.1A6.97 6.97 0 0 1 5.47 12c0-.73.13-1.44.36-2.1V7.07H2.18A11 11 0 0 0 1 12c0 1.78.43 3.46 1.18 4.94l3.66-2.84z" />
-      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.65l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.83C6.71 7.31 9.14 5.38 12 5.38z" />
+      <path
+        fill="#4285F4"
+        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.99.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M5.84 14.1A6.97 6.97 0 0 1 5.47 12c0-.73.13-1.44.36-2.1V7.07H2.18A11 11 0 0 0 1 12c0 1.78.43 3.46 1.18 4.94l3.66-2.84z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 5.38c1.62 0 3.06.56 4.21 1.65l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.83C6.71 7.31 9.14 5.38 12 5.38z"
+      />
     </svg>
   );
 }
@@ -178,10 +202,24 @@ function SignInForm({ onSuccess }: { onSuccess: () => void }) {
       <GoogleButton />
       <Divider />
       <Field label="Email" icon={Mail}>
-        <Input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required />
+        <Input
+          type="email"
+          autoComplete="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@example.com"
+          required
+        />
       </Field>
       <Field label="Password" icon={Lock}>
-        <Input type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
+        <Input
+          type="password"
+          autoComplete="current-password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="••••••••"
+          required
+        />
       </Field>
       <div className="flex items-center justify-between">
         <label className="flex items-center gap-2 text-sm cursor-pointer">
@@ -192,7 +230,11 @@ function SignInForm({ onSuccess }: { onSuccess: () => void }) {
           Forgot password?
         </Link>
       </div>
-      <Button type="submit" className="w-full bg-gradient-primary text-primary-foreground shadow-elegant" disabled={busy}>
+      <Button
+        type="submit"
+        className="w-full bg-gradient-primary text-primary-foreground shadow-elegant"
+        disabled={busy}
+      >
         {busy && <Loader2 className="mr-2 size-4 animate-spin" />} Sign in
       </Button>
     </form>
@@ -237,22 +279,54 @@ function SignUpForm({ onSuccess }: { onSuccess: () => void }) {
       <GoogleButton />
       <Divider />
       <Field label="Name" icon={UserIcon}>
-        <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Alex Green" autoComplete="name" required />
+        <Input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Alex Green"
+          autoComplete="name"
+          required
+        />
       </Field>
       <Field label="Email" icon={Mail}>
-        <Input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required />
+        <Input
+          type="email"
+          autoComplete="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@example.com"
+          required
+        />
       </Field>
       <Field label="Password" icon={Lock}>
-        <Input type="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 8 characters" required />
+        <Input
+          type="password"
+          autoComplete="new-password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="At least 8 characters"
+          required
+        />
       </Field>
-      <Button type="submit" className="w-full bg-gradient-primary text-primary-foreground shadow-elegant" disabled={busy}>
+      <Button
+        type="submit"
+        className="w-full bg-gradient-primary text-primary-foreground shadow-elegant"
+        disabled={busy}
+      >
         {busy && <Loader2 className="mr-2 size-4 animate-spin" />} Create account
       </Button>
     </form>
   );
 }
 
-function Field({ label, icon: Icon, children }: { label: string; icon: React.ComponentType<{ className?: string }>; children: React.ReactNode }) {
+function Field({
+  label,
+  icon: Icon,
+  children,
+}: {
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  children: React.ReactNode;
+}) {
   return (
     <div className="space-y-1.5">
       <Label className="text-sm font-medium">{label}</Label>
@@ -267,7 +341,9 @@ function Field({ label, icon: Icon, children }: { label: string; icon: React.Com
 function Divider() {
   return (
     <div className="relative my-2">
-      <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-border" /></div>
+      <div className="absolute inset-0 flex items-center">
+        <span className="w-full border-t border-border" />
+      </div>
       <div className="relative flex justify-center text-xs uppercase">
         <span className="bg-card px-2 text-muted-foreground">or</span>
       </div>

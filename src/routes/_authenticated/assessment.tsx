@@ -29,8 +29,8 @@ import {
   ShoppingBag,
   Recycle,
   Plane,
-  ArrowRight,
   Loader2,
+  ArrowRight,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -38,7 +38,11 @@ export const Route = createFileRoute("/_authenticated/assessment")({
   head: () => ({
     meta: [
       { title: "Carbon Footprint Assessment — EcoTrack AI" },
-      { name: "description", content: "Answer six quick questions across transport, energy, food, shopping, waste, and travel to get your personalized carbon footprint." },
+      {
+        name: "description",
+        content:
+          "Answer six quick questions across transport, energy, food, shopping, waste, and travel to get your personalized carbon footprint.",
+      },
     ],
   }),
   component: AssessmentPage,
@@ -158,7 +162,9 @@ function AssessmentPage() {
             <SelectField
               label="Shopping frequency"
               value={data.shoppingFrequency}
-              onChange={(v) => update("shoppingFrequency", v as AssessmentData["shoppingFrequency"])}
+              onChange={(v) =>
+                update("shoppingFrequency", v as AssessmentData["shoppingFrequency"])
+              }
               options={[
                 ["low", "Low — only essentials"],
                 ["medium", "Medium — occasional"],
@@ -215,13 +221,19 @@ function AssessmentPage() {
             />
           </Section>
 
-
           <div className="lg:col-span-2 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-card p-6 shadow-soft">
             <div>
               <div className="font-semibold">Ready to see your impact?</div>
-              <div className="text-sm text-muted-foreground">We'll compute your footprint and unlock your personalized dashboard.</div>
+              <div className="text-sm text-muted-foreground">
+                We'll compute your footprint and unlock your personalized dashboard.
+              </div>
             </div>
-            <Button type="submit" size="lg" disabled={busy} className="bg-gradient-primary text-primary-foreground shadow-elegant hover:opacity-90">
+            <Button
+              type="submit"
+              size="lg"
+              disabled={busy}
+              className="bg-gradient-primary text-primary-foreground shadow-elegant hover:opacity-90"
+            >
               {busy ? <Loader2 className="mr-2 size-4 animate-spin" /> : null}
               Calculate footprint <ArrowRight className="ml-2 size-4" />
             </Button>
@@ -284,7 +296,9 @@ function SliderField({
   return (
     <div>
       <div className="flex items-center justify-between">
-        <Label htmlFor={id} className="text-sm">{label}</Label>
+        <Label htmlFor={id} className="text-sm">
+          {label}
+        </Label>
         <div id={valueId} className="text-sm font-medium tabular-nums" aria-live="polite">
           {value} <span className="text-muted-foreground">{unit}</span>
         </div>
@@ -351,8 +365,12 @@ function SwitchField({
   return (
     <div className="flex items-center justify-between rounded-xl border border-border p-4">
       <div>
-        <Label htmlFor={id} className="font-medium cursor-pointer">{label}</Label>
-        <div id={descId} className="text-sm text-muted-foreground">{desc}</div>
+        <Label htmlFor={id} className="font-medium cursor-pointer">
+          {label}
+        </Label>
+        <div id={descId} className="text-sm text-muted-foreground">
+          {desc}
+        </div>
       </div>
       <Switch
         id={id}
@@ -364,4 +382,3 @@ function SwitchField({
     </div>
   );
 }
-

@@ -62,7 +62,11 @@ function ProfilePage() {
 
   const initials = (profile?.display_name || user?.email || "?").slice(0, 2).toUpperCase();
   const joined = profile?.created_at
-    ? new Date(profile.created_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+    ? new Date(profile.created_at).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
     : "—";
 
   return (
@@ -71,7 +75,9 @@ function ProfilePage() {
       <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-10 flex-1">
         <div className="text-sm font-medium text-leaf">Account</div>
         <h1 className="mt-1 text-3xl font-bold sm:text-4xl">Your profile</h1>
-        <p className="mt-2 text-muted-foreground">Manage your personal details and view your sustainability progress.</p>
+        <p className="mt-2 text-muted-foreground">
+          Manage your personal details and view your sustainability progress.
+        </p>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
           <Card className="lg:col-span-2 shadow-soft">
@@ -90,12 +96,22 @@ function ProfilePage() {
                   </Avatar>
                   <div className="flex-1 space-y-1.5">
                     <Label htmlFor="avatar">Avatar URL</Label>
-                    <Input id="avatar" value={avatar} onChange={(e) => setAvatar(e.target.value)} placeholder="https://…" />
+                    <Input
+                      id="avatar"
+                      value={avatar}
+                      onChange={(e) => setAvatar(e.target.value)}
+                      placeholder="https://…"
+                    />
                   </div>
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="name">Display name</Label>
-                  <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" />
+                  <Input
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Your name"
+                  />
                 </div>
                 <div className="space-y-1.5">
                   <Label>Email</Label>
@@ -103,7 +119,11 @@ function ProfilePage() {
                     <Mail className="size-4" /> {user?.email}
                   </div>
                 </div>
-                <Button type="submit" disabled={busy} className="bg-gradient-primary text-primary-foreground">
+                <Button
+                  type="submit"
+                  disabled={busy}
+                  className="bg-gradient-primary text-primary-foreground"
+                >
                   {busy && <Loader2 className="mr-2 size-4 animate-spin" />} Save changes
                 </Button>
               </form>
@@ -118,7 +138,9 @@ function ProfilePage() {
                   <Award className="size-4" /> Sustainability Badge
                 </div>
                 <CardTitle className="font-display text-2xl mt-2">{badge.name}</CardTitle>
-                <CardDescription className="text-primary-foreground/90">Tier {badge.tier} / 5</CardDescription>
+                <CardDescription className="text-primary-foreground/90">
+                  Tier {badge.tier} / 5
+                </CardDescription>
               </CardHeader>
               <CardContent className="relative">
                 <p className="text-sm text-primary-foreground/90">{badge.description}</p>
@@ -128,15 +150,21 @@ function ProfilePage() {
             <Card className="shadow-soft">
               <CardContent className="p-6 space-y-3 text-sm">
                 <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-2 text-muted-foreground"><CalendarDays className="size-4" /> Joined</span>
+                  <span className="flex items-center gap-2 text-muted-foreground">
+                    <CalendarDays className="size-4" /> Joined
+                  </span>
                   <span className="font-medium">{joined}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-2 text-muted-foreground"><Sparkles className="size-4" /> Assessments</span>
+                  <span className="flex items-center gap-2 text-muted-foreground">
+                    <Sparkles className="size-4" /> Assessments
+                  </span>
                   <span className="font-medium">{assessmentCount}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-2 text-muted-foreground"><Award className="size-4" /> Best score</span>
+                  <span className="flex items-center gap-2 text-muted-foreground">
+                    <Award className="size-4" /> Best score
+                  </span>
                   <span className="font-medium">{bestScore ?? "—"}</span>
                 </div>
               </CardContent>

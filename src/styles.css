@@ -85,7 +85,8 @@
   --chart-4: oklch(0.55 0.08 60);
   --chart-5: oklch(0.7 0.15 180);
 
-  --gradient-hero: radial-gradient(
+  --gradient-hero:
+    radial-gradient(
       ellipse at top left,
       color-mix(in oklab, var(--leaf) 22%, transparent),
       transparent 55%
@@ -160,7 +161,10 @@
     font-family: var(--font-sans);
     font-feature-settings: "ss01", "cv11";
   }
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: var(--font-display);
     letter-spacing: -0.02em;
   }

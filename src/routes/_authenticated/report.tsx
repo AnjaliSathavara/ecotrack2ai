@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { computeFootprint, loadAssessment, DEFAULT_ASSESSMENT } from "@/lib/assessment";
 import { useMemo } from "react";
-import { Download, FileText, Leaf, Sparkles, TrendingDown, Trophy } from "lucide-react";
+import { Download, FileText, Leaf, Sparkles, Trophy, TrendingDown } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,7 +13,11 @@ export const Route = createFileRoute("/_authenticated/report")({
   head: () => ({
     meta: [
       { title: "Sustainability Report — EcoTrack AI" },
-      { name: "description", content: "Generate a monthly sustainability report summarizing your footprint, top categories, and recommended actions." },
+      {
+        name: "description",
+        content:
+          "Generate a monthly sustainability report summarizing your footprint, top categories, and recommended actions.",
+      },
     ],
   }),
   component: ReportPage,
@@ -61,7 +65,12 @@ function ReportPage() {
       await supabase.from("reports").insert({
         user_id: user.id,
         month,
-        payload: { score: fp.score, rating: fp.rating, totalTonnes: fp.totalTonnes, breakdown: fp.breakdown } as never,
+        payload: {
+          score: fp.score,
+          rating: fp.rating,
+          totalTonnes: fp.totalTonnes,
+          breakdown: fp.breakdown,
+        } as never,
       });
     }
     toast.success("Report saved & downloaded");
@@ -75,13 +84,18 @@ function ReportPage() {
           <div>
             <div className="text-sm font-medium text-leaf">Sustainability Report</div>
             <h1 className="mt-1 text-3xl font-bold sm:text-4xl">Your impact, {month}</h1>
-            <p className="mt-2 text-muted-foreground">A polished overview — ready to share or archive.</p>
+            <p className="mt-2 text-muted-foreground">
+              A polished overview — ready to share or archive.
+            </p>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" asChild>
               <Link to="/dashboard">Back to dashboard</Link>
             </Button>
-            <Button onClick={downloadReport} className="bg-gradient-primary text-primary-foreground shadow-elegant hover:opacity-90">
+            <Button
+              onClick={downloadReport}
+              className="bg-gradient-primary text-primary-foreground shadow-elegant hover:opacity-90"
+            >
               <Download className="mr-2 size-4" /> Download report
             </Button>
           </div>
@@ -123,14 +137,16 @@ function ReportPage() {
             <div>
               <h3 className="text-base font-semibold">Executive summary</h3>
               <p className="mt-2 text-sm text-muted-foreground">
-                Your estimated annual carbon footprint is <b className="text-foreground">{fp.totalTonnes} tonnes CO₂e</b> —{" "}
+                Your estimated annual carbon footprint is{" "}
+                <b className="text-foreground">{fp.totalTonnes} tonnes CO₂e</b> —{" "}
                 {fp.totalTonnes < 4.7 ? (
                   <span>below the global average of 4.7 t. Strong baseline.</span>
                 ) : (
                   <span>above the global average of 4.7 t. There's meaningful upside.</span>
                 )}{" "}
-                Your strongest opportunity for reduction sits in <b className="text-foreground">{topCategory[0]}</b>,
-                which represents {Math.round((topCategory[1] / fp.totalKg) * 100)}% of your total impact.
+                Your strongest opportunity for reduction sits in{" "}
+                <b className="text-foreground">{topCategory[0]}</b>, which represents{" "}
+                {Math.round((topCategory[1] / fp.totalKg) * 100)}% of your total impact.
               </p>
             </div>
 
@@ -169,7 +185,10 @@ function ReportPage() {
                   { t: "Switch to a renewable tariff", s: "≈ 900 kg CO₂e/yr saved" },
                   { t: "Compost food scraps", s: "≈ 120 kg CO₂e/yr saved" },
                 ].map((r) => (
-                  <li key={r.t} className="flex items-start gap-3 rounded-xl border border-border bg-muted/30 p-4">
+                  <li
+                    key={r.t}
+                    className="flex items-start gap-3 rounded-xl border border-border bg-muted/30 p-4"
+                  >
                     <Trophy className="size-5 text-leaf mt-0.5 shrink-0" />
                     <div>
                       <div className="text-sm font-medium">{r.t}</div>

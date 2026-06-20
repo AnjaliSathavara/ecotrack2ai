@@ -56,11 +56,15 @@ function ResetPasswordPage() {
           <span className="grid size-9 place-items-center rounded-xl bg-gradient-primary text-primary-foreground">
             <Leaf className="size-5" />
           </span>
-          <span className="font-display text-lg font-bold">EcoTrack <span className="text-gradient">AI</span></span>
+          <span className="font-display text-lg font-bold">
+            EcoTrack <span className="text-gradient">AI</span>
+          </span>
         </div>
         <Card className="p-6 sm:p-8 shadow-elegant">
           <h1 className="text-2xl font-bold">Set a new password</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Choose a strong password you don't use elsewhere.</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Choose a strong password you don't use elsewhere.
+          </p>
 
           {!ready ? (
             <div className="mt-6 text-sm text-muted-foreground">Verifying reset link…</div>
@@ -68,13 +72,29 @@ function ResetPasswordPage() {
             <form onSubmit={onSubmit} className="mt-6 space-y-4">
               <div className="space-y-1.5">
                 <Label>New password</Label>
-                <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} />
+                <Input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={8}
+                />
               </div>
               <div className="space-y-1.5">
                 <Label>Confirm password</Label>
-                <Input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required minLength={8} />
+                <Input
+                  type="password"
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                  required
+                  minLength={8}
+                />
               </div>
-              <Button type="submit" className="w-full bg-gradient-primary text-primary-foreground" disabled={busy}>
+              <Button
+                type="submit"
+                className="w-full bg-gradient-primary text-primary-foreground"
+                disabled={busy}
+              >
                 {busy && <Loader2 className="mr-2 size-4 animate-spin" />} Update password
               </Button>
             </form>

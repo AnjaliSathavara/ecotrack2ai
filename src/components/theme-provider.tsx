@@ -23,9 +23,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [resolved, setResolved] = useState<Resolved>("light");
 
   useEffect(() => {
-    const stored = (typeof window !== "undefined"
-      ? (localStorage.getItem(STORAGE_KEY) as Theme | null)
-      : null) ?? "system";
+    const stored =
+      (typeof window !== "undefined"
+        ? (localStorage.getItem(STORAGE_KEY) as Theme | null)
+        : null) ?? "system";
     setThemeState(stored);
   }, []);
 
